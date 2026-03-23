@@ -33,7 +33,7 @@ Instruções para agentes de IA (Cursor, GitHub Copilot, OpenAI Codex, Google Ju
 - Modificar `tokens/alm-tokens.json` sem instrução explícita — é um export direto do Figma
 - Editar ou criar arquivos em `legacy/` — é referência somente leitura
 - Criar ou modificar `kb.json` neste repositório — ele vive em `dasa-figma-plugin`
-- Fazer push direto em `master` — exceto quando o usuário confirmar que é admin
+- Fazer push direto em `main` — exceto quando o usuário confirmar fluxo admin (veja `CONTRIBUTING.md` e `.cursor/rules/admin-push.mdc` na raiz do monorepo)
 
 ---
 

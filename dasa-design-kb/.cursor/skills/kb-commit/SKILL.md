@@ -59,7 +59,10 @@ Se não houver mudanças, informe o designer e encerre a skill.
 git branch --show-current
 ```
 
-Se o resultado for `main` ou `master`, sincronize e crie uma branch antes de continuar:
+Se o resultado for `main` ou `master`:
+
+- **Com override admin** (usuário pediu publicação sem PR): não crie branch — execute `git pull origin main` e continue os passos seguintes em `main`.
+- **Fluxo padrão:** sincronize e crie uma branch antes de continuar:
 
 ```bash
 git checkout main
@@ -168,20 +171,22 @@ Após criar o PR, mostre a URL para o designer revisar e compartilhar com a equi
 
 ## Output esperado
 
-Commit com mensagem Conventional Commits + PR aberto com template estruturado + URL do PR para revisão.
+**Fluxo padrão:** commit com mensagem Conventional Commits + PR aberto com template estruturado + URL do PR para revisão.
+
+**Override admin:** commit + `git push origin main` — sem PR; CHANGELOG e diff revisados como no fluxo padrão.
 
 ## Tratamento de erros
 
 | Erro | O que fazer |
 |---|---|
-| Branch é `main` | Crie uma branch. Nunca commite direto em `main`. |
-| `gh: command not found` | Instrua a instalar: `brew install gh && gh auth login` |
+| Branch é `main` e **não** há pedido de override admin | Crie uma branch antes de commitar. Se o usuário pediu fluxo admin, veja seção **Override de administrador**. |
+| `gh: command not found` | Só necessário para abrir PR no fluxo padrão. Instrua: `brew install gh && gh auth login` |
 | Push rejeitado (upstream divergiu) | Execute `git pull --rebase` antes do push |
 
 ## Notas
 
 - Esta skill não faz force push nem amend em commits já publicados.
-- PRs sem aprovação de outro membro da equipe não devem ser mergeados em `main`.
+- No fluxo com PR, evite merge em `main` sem a revisão acordada pelo time.
 - Para atualizar regras do plugin Figma (`kb.json`), use o repositório `dasa-figma-plugin`.
 - Skill terminal — não aciona outras. É chamada diretamente pelo usuário após edições no KB.
 
@@ -189,15 +194,12 @@ Commit com mensagem Conventional Commits + PR aberto com template estruturado + 
 
 ## Override de administrador
 
-> **Atenção: uso em situações de emergência apenas (break-glass).**
-> Push direto em `main`/`master` viola o fluxo Git Flow mesmo para admins. Prefira sempre o fluxo padrão (branch → PR → revisão) — ele protege o histórico, é auditável e aciona o CHANGELOG corretamente.
+O arquivo **`admin-push.mdc`** na raiz do monorepo (`.cursor/rules/admin-push.mdc`, ao lado da pasta `dasa-design-kb/`) alinha o comportamento desta skill quando o usuário pede **publicação sem PR**, **fluxo admin** ou confirma ser **admin**.
 
-O arquivo `admin-push.mdc` na raiz do monorepo (`/dasa/.cursor/rules/admin-push.mdc`) sobrescreve o comportamento desta skill para o usuário administrador do repositório.
-
-**Quando o override está ativo:**
+**Quando o override está ativo** (pedido explícito do usuário):
 - Os passos 2 (criação de branch) e 7 (criação de PR) são **omitidos**
-- O push é feito diretamente em `master`
-- Os passos de validação e CHANGELOG continuam obrigatórios
-- O commit fica sem revisão de par — risco de introduzir erros sem rastreabilidade
+- O push é feito na branch **`main`** (`git push origin main`) — não usar `master` neste repositório
+- Os passos de revisão de diff, mensagem Conventional Commits e **CHANGELOG.md** continuam obrigatórios
+- Equipes que exigem revisão por par devem preferir branch + PR; push direto em `main` dispensa a revisão de merge no GitHub
 
-**Use somente se:** a branch principal estiver bloqueada por falha crítica não-corrigível via PR, ou por instrução explícita de um mantenedor sênior com justificativa documentada.
+**Quando usar:** política do time de mantenedores com permissão de admin; ou urgência documentada. **Evite** push direto se houver política obrigatória de PR na organização.

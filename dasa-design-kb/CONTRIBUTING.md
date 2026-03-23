@@ -26,11 +26,32 @@ publica as mudanças / usa a skill kb-commit
 
 A skill vai guiar você por cada etapa: mostra o diff, sugere a mensagem de commit, atualiza o CHANGELOG e abre o PR — tudo com confirmação antes de executar.
 
+### Administradores (sem Pull Request)
+
+Se você tem permissão de **admin** no repositório e prefere **não** abrir PR:
+
+1. Trabalhe na branch **`main`** (sem criar branch de feature).
+2. Atualize `CHANGELOG.md` na seção `## [Unreleased]` como em qualquer contribuição.
+3. Faça commit no formato [Conventional Commits](https://www.conventionalcommits.org/) e envie direto:
+
+```bash
+git add -A
+git commit -m "docs(copy): descreva a mudança em PT-BR"
+git push origin main
+```
+
+No **monorepo `dasa`**, o Git deve ser executado na **raiz** do repositório (`dasa/`), não só dentro de `dasa-design-kb/`. Os arquivos versionados aparecem como `dasa-design-kb/...` no commit.
+
+A Cursor Rule **`admin-push.mdc`** na raiz do monorepo (`.cursor/rules/admin-push.mdc`) orienta agentes a **não** criarem branch nem PR quando você pedir publicação como admin — mantendo CHANGELOG e mensagem de commit.
+
+Na skill **`kb-commit`**, diga explicitamente que é **admin** ou que quer **publicar sem PR**: o fluxo omite criação de branch e `gh pr create`; o push final é em **`main`**.
+
 ### Operações disponíveis via Cursor
 
 | Operação | Como acionar |
 |---|---|
 | Publicar mudanças (commit + PR) | "publica as mudanças" / "usa a skill kb-commit" |
+| Publicar como admin (commit + push em `main`, sem PR) | "publica como admin" / "kb-commit sem PR" / "sou admin, sobe direto" |
 | Criar branch nova | "cria uma branch docs/minha-mudanca" |
 | Trocar de branch | "muda para a branch main" |
 | Pegar mudanças recentes | "faz um pull das mudanças mais recentes" |
@@ -40,7 +61,7 @@ Use os comandos manuais abaixo apenas se precisar de controle mais preciso ou qu
 
 ### Nova skill no Cursor ou mudança no inventário de skills
 
-Sempre que você **criar, renomear ou remover** uma pasta em `.cursor/skills/<nome>/` (com `SKILL.md`), trate como mudança de **fonte de verdade** do protocolo: atualize na mesma contribuição o **[`SKILLS.md`](./SKILLS.md)** (tabela “As N skills”, diagrama Mermaid e contratos), o **[`README.md`](./README.md)** (tabela “Skills disponíveis no Cursor”) e o **[`llms.txt`](./llms.txt)** (seção de skills com link para `.cursor/skills/<nome>/SKILL.md`). Assim humanos, agentes e o índice para LLMs permanecem alinhados. Para validar automaticamente que cada skill no disco está referenciada nesses três arquivos — além de links quebrados, `llms.txt` e frontmatter em `docs/` — rode o script da skill **ref-linker** no zsh: `zsh ~/.cursor/skills/ref-linker/scripts/audit-refs.sh "$(pwd)"` (a partir da raiz deste repositório). Issues aparecem como `SKILL-SYNC-LLMS`, `SKILL-SYNC-README` ou `SKILL-SYNC-SKILLS` no output.
+Sempre que você **criar, renomear ou remover** uma pasta em `.cursor/skills/<nome>/` (com `SKILL.md`), trate como mudança de **fonte de verdade** do protocolo: atualize na mesma contribuição o **[`SKILLS.md`](./SKILLS.md)** (tabela “As N skills”, diagrama Mermaid e contratos), o **[`README.md`](./README.md)** (tabela “Skills disponíveis no Cursor”) e o **[`llms.txt`](./llms.txt)** (seção de skills com link para `.cursor/skills/<nome>/SKILL.md`). Assim humanos, agentes e o índice para LLMs permanecem alinhados. Para validar automaticamente que cada skill no disco está referenciada nesses três arquivos — além de links quebrados, `llms.txt` e frontmatter em `docs/` — rode o script da skill **ref-linker** (pacote **sync-references**) no zsh: `zsh ~/.cursor/skills/sync-references/scripts/audit-refs.sh "$(pwd)"` (a partir da raiz do clone onde está o `dasa-design-kb`). Issues aparecem como `SKILL-SYNC-LLMS`, `SKILL-SYNC-README` ou `SKILL-SYNC-SKILLS` no output.
 
 ---
 
