@@ -77,6 +77,7 @@ Escopo: mudanças em `docs/` e `tokens/` deste repositório. O versionamento sem
 
 ### Changed
 
+- `.cursor/rules/dasa-kb.mdc`: regras de edição alinhadas ao fluxo admin; subseção **kb-commit — micro-commit** (commit + push obrigatório na sequência)
 - `.cursor/skills/kb-commit/SKILL.md`: **micro-commit** — após todo `git commit`, push obrigatório na mesma sequência; seção dedicada; passo 6 explícito; output esperado; pré-requisitos (`gh` só no fluxo com PR); override admin em **`main`**; tabela de erros e notas
 - `CONTRIBUTING.md`: skill `kb-commit` com commit + push ao `origin`; seção **Administradores (sem Pull Request)**; tabela de triggers; caminho do script de auditoria `~/.cursor/skills/sync-references/scripts/audit-refs.sh`
 - `.cursor/rules/admin-push.mdc` (raiz do monorepo `dasa`): branch **`main`**, push imediato após commit, monorepo, sem PR quando admin, CHANGELOG obrigatório

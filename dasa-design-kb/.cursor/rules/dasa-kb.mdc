@@ -20,7 +20,7 @@ Você está trabalhando no repositório `dasa-design-kb`. Este repositório cont
 
 ## Regras ao editar
 
-- PRs obrigatórios — sem push direto em `main`
+- Fluxo padrão: branch + PR — sem push direto em `main` sem ser **fluxo admin** (veja [`CONTRIBUTING.md`](../CONTRIBUTING.md) e `admin-push.mdc` na raiz do monorepo `dasa/`)
 - Para mudanças em `docs/`: não é necessário incrementar versão
 - Para mudanças em `tokens/alm-tokens.json`: use commit `chore(tokens): sync`
 
@@ -69,5 +69,9 @@ playground-state-panel (Modo B)  →  kb-commit
 - `playground-state-panel` Modo A **sempre chama** `playground-sync-tokens` ao final
 - `quality-gate` **chama** `copy-review` quando o copy inline exige revisão profunda
 - `kb-commit` é independente — acionada após edições em `docs/` ou `tokens/`
+
+### `kb-commit` — micro-commit (commit + push)
+
+Ao publicar com a skill **`kb-commit`**, **sempre** execute **`git push` logo após `git commit`** na mesma sequência — não encerre com commit só local. No fluxo com PR, faça push da branch **antes** de `gh pr create`. No fluxo admin em `main`, `git push origin main` após o commit. Detalhes em [`.cursor/skills/kb-commit/SKILL.md`](../.cursor/skills/kb-commit/SKILL.md).
 
 Registro completo com mapa de triggers e troubleshooting em [`SKILLS.md`](../SKILLS.md).
