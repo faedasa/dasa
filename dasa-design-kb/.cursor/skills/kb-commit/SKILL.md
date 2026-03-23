@@ -1,6 +1,6 @@
 ---
 name: kb-commit
-description: "Valida, commita e abre PR com mudanças no KB — fluxo git guiado para designers seguindo Conventional Commits e GitFlow."
+description: "Valida, commita e envia ao remoto mudanças no KB — após todo commit, push obrigatório (micro-commit); fluxo com PR ou admin conforme CONTRIBUTING."
 version: "1.0"
 language: pt-BR
 allowed-tools: [Read, Shell]
@@ -9,7 +9,17 @@ tags: [git, github, commit, kb, pr]
 
 # Skill: kb-commit
 
-Valida, commita e abre PR com mudanças no KB — fluxo git guiado para designers.
+Valida, commita e **envia ao remoto** mudanças no KB — fluxo git guiado para designers.
+
+## Micro-commit: commit + push no mesmo ato
+
+**Nunca considere a skill concluída só após `git commit`.** Sempre que houver commit, execute **`git push`** na sequência (mesma execução ou imediatamente depois, antes de encerrar a resposta ao usuário).
+
+- **Objetivo:** o remoto (`origin`) reflete o trabalho local — sem commits “só na máquina”, sem surpresas em outro clone e sem PR aberto sem branch no GitHub.
+- **Fluxo padrão (branch):** `git commit` → `git push -u origin <branch>` → só então `gh pr create` (o PR precisa da branch já no remoto).
+- **Override admin (`main`):** `git commit` → `git push origin main` — não há PR.
+
+Se o push falhar (rede, permissão), tente `git pull --rebase` quando aplicável e repita o push; só informe sucesso ao usuário quando o push tiver ido.
 
 ## Quando usar
 
@@ -30,8 +40,8 @@ Acione esta skill quando:
 ## Pré-requisitos
 
 - `git` instalado e repositório configurado
-- `gh` (GitHub CLI) instalado para criar PRs automaticamente
-- Branch diferente de `main` (crie uma branch se ainda não tiver)
+- `gh` (GitHub CLI) — necessário **apenas** no fluxo com PR (passo 7); no override admin, só `git push`
+- **Fluxo padrão:** branch de feature (não commitar em `main` sem override admin)
 
 > **Nota:** `kb.json` agora vive no repositório `dasa-figma-plugin`. Mudanças em regras, tokens estruturados ou glossário do plugin devem ser feitas por PR naquele repo.
 
@@ -127,7 +137,7 @@ Exemplos:
 
 Sugira uma mensagem baseada no diff e peça aprovação antes de commitar.
 
-### Passo 6 — Commit e push
+### Passo 6 — Commit e push (obrigatório em conjunto)
 
 Revise o que será staged antes de confirmar:
 
@@ -135,13 +145,25 @@ Revise o que será staged antes de confirmar:
 git status
 ```
 
-Se tudo estiver correto:
+Se tudo estiver correto, **commit e push na mesma sequência** — não pare após o commit.
+
+**Em branch de feature:**
 
 ```bash
 git add -A
 git commit -m "<mensagem aprovada>"
 git push -u origin HEAD
 ```
+
+**Override admin (em `main`):**
+
+```bash
+git add -A
+git commit -m "<mensagem aprovada>"
+git push origin main
+```
+
+Só avance para o passo 7 depois que **`git push` tiver sucesso** (micro-commit: remoto atualizado).
 
 ### Passo 7 — Abrir Pull Request
 
@@ -169,11 +191,13 @@ EOF
 
 Após criar o PR, mostre a URL para o designer revisar e compartilhar com a equipe.
 
+> **Override admin:** não execute o passo 7 — o fluxo termina após push em `main` bem-sucedido.
+
 ## Output esperado
 
-**Fluxo padrão:** commit com mensagem Conventional Commits + PR aberto com template estruturado + URL do PR para revisão.
+**Fluxo padrão:** commit + **push da branch** + PR aberto (`gh`) + URL do PR. Nunca declare “publicado” sem push concluído.
 
-**Override admin:** commit + `git push origin main` — sem PR; CHANGELOG e diff revisados como no fluxo padrão.
+**Override admin:** commit + **`git push origin main`** — sem PR; CHANGELOG e diff revisados como no fluxo padrão.
 
 ## Tratamento de erros
 

@@ -77,9 +77,9 @@ Escopo: mudanças em `docs/` e `tokens/` deste repositório. O versionamento sem
 
 ### Changed
 
-- `CONTRIBUTING.md`: seção **Administradores (sem Pull Request)** — push direto em `main`, Git na raiz do monorepo, tabela de triggers ("publica como admin", etc.), referência à rule `admin-push.mdc` e à skill `kb-commit`; caminho do script de auditoria de skills corrigido para `~/.cursor/skills/sync-references/scripts/audit-refs.sh`
-- `.cursor/skills/kb-commit/SKILL.md`: override de administrador alinhado à branch **`main`**; output esperado em dois modos; tabela de erros e notas atualizadas
-- `.cursor/rules/admin-push.mdc` (raiz do monorepo `dasa`, fora de `dasa-design-kb/`): branch **`main`** em vez de `master`; monorepo, CHANGELOG obrigatório, sem PR quando admin
+- `.cursor/skills/kb-commit/SKILL.md`: **micro-commit** — após todo `git commit`, push obrigatório na mesma sequência; seção dedicada; passo 6 explícito; output esperado; pré-requisitos (`gh` só no fluxo com PR); override admin em **`main`**; tabela de erros e notas
+- `CONTRIBUTING.md`: skill `kb-commit` com commit + push ao `origin`; seção **Administradores (sem Pull Request)**; tabela de triggers; caminho do script de auditoria `~/.cursor/skills/sync-references/scripts/audit-refs.sh`
+- `.cursor/rules/admin-push.mdc` (raiz do monorepo `dasa`): branch **`main`**, push imediato após commit, monorepo, sem PR quando admin, CHANGELOG obrigatório
 - `AGENTS.md`: regra sobre push direto em `main` alinhada ao fluxo admin e aos docs
 
 - `llms.txt`, `README.md`, `.cursor/rules/dasa-kb.mdc`: inventário de skills sincronizado com **9 skills** — incluída `screen-contract` (já presente em `SKILLS.md` e em `.cursor/skills/`, mas ausente do índice para LLMs e das tabelas públicas); pipeline de produção na rule atualizado para refletir CHAIN `screen-contract` no Step 5 de `implement-design`

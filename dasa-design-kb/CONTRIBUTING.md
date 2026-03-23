@@ -13,7 +13,7 @@ Guia para designers que querem atualizar tokens, regras de copy ou guidelines.
 
 ## Via skill (recomendado)
 
-> Você não precisa saber Git para contribuir. A skill `kb-commit` no Cursor cuida de tudo — branch, diff, CHANGELOG, commit e PR — em linguagem natural.
+> Você não precisa saber Git para contribuir. A skill `kb-commit` no Cursor cuida de tudo — branch, diff, CHANGELOG, **commit e push** (micro-commit: tudo que for commitado já sobe para o `origin`), e PR quando for o caso — em linguagem natural.
 
 ### Como funciona na prática
 

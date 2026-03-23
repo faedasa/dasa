@@ -8,7 +8,7 @@ Quando o usuário pedir para publicar, subir ou fazer push de mudanças no **`da
 
 - **Não** criar branch de feature, **não** usar `gh pr create` — fluxo na branch padrão **`main`** (este repositório usa `main`, não `master`).
 - No **monorepo `dasa`**, rodar `git` na **raiz** do clone (`dasa/`), para que paths como `dasa-design-kb/CHANGELOG.md` entrem no commit corretamente.
-- Fluxo: `git add` → `git commit -m "<Conventional Commits>"` → `git push origin main`.
+- Fluxo: `git add` → `git commit -m "<Conventional Commits>"` → **`git push origin main` logo em seguida** (micro-commit — não encerre sem push bem-sucedido).
 - Manter obrigatório: atualização de `dasa-design-kb/CHANGELOG.md` e revisão do diff antes do commit.
 - A skill **`kb-commit`** continua válida para guiar diff e CHANGELOG; **omitir** apenas os passos de criação de branch e abertura de PR.
 
