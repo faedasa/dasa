@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Protótipo Nav Dasa — home com visão comercial, upsell e serviços Cartão Dasa e atendimento domiciliar." />
+  <title>Nav Dasa — Home · Visão comercial &amp; upsell · Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #0037FF;
+      --primary-dark: #001561;
+      --primary-mid: #002FDB;
+      --primary-light: #DBE3FF;
+      --primary-xlight: #F0F3FF;
+      --secondary: #005F8F;
+      --secondary-light: #EBF8FF;
+      --success: #1F6634;
+      --success-light: #E8F5EC;
+      --warning: #976B1A;
+      --warning-light: #FEF9EE;
+      --accent-gold: #C4A035;
+      --accent-gold-light: #FBF6E4;
+      --gray-10: #1F1F1F;
+      --gray-50: #4C4C4C;
+      --gray-80: #737373;
+      --gray-130: #C2C2C2;
+      --gray-150: #E6E6E6;
+      --gray-160: #F5F5F5;
+      --white: #FFFFFF;
+      --radius-card: 24px;
+      --radius-btn: 999px;
+      --shadow-01: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+      --shadow-04: 0 8px 32px rgba(0,0,0,.14), 0 2px 8px rgba(0,0,0,.08);
+      --duration-fast: 150ms;
+      --topnav-h: 64px;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+      --font-display: 'Outfit', var(--font-body);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--gray-160);
+      color: var(--gray-10);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .proto-badge {
+      position: fixed;
+      top: 72px;
+      left: 16px;
+      z-index: 90;
+      background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+      color: var(--white);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      padding: 6px 14px;
+      border-radius: 99px;
+      box-shadow: var(--shadow-04);
+    }
+
+    /* Global nav */
+    .global-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--topnav-h);
+      background: var(--gray-160);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 12px;
+      z-index: 100;
+    }
+    .global-nav__logo {
+      display: flex; align-items: center; gap: 10px;
+      flex-shrink: 0; margin-right: 4px; text-decoration: none; color: inherit;
+    }
+    .logo-mark {
+      width: 32px; height: 32px;
+      background: var(--primary);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-mark svg { width: 18px; height: 18px; }
+    .logo-name { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--primary-dark); letter-spacing: -.3px; }
+    .logo-name span { color: var(--primary); }
+
+    .global-nav__primary {
+      display: flex; align-items: center;
+      background: var(--white);
+      border-radius: 999px;
+      box-shadow: var(--shadow-01);
+      padding: 4px;
+      gap: 2px;
+      height: 44px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .global-nav__primary::-webkit-scrollbar { display: none; }
+    .gnav-item {
+      display: flex; align-items: center; gap: 6px;
+      padding: 0 12px; height: 36px;
+      border: none; background: transparent;
+      border-radius: 999px;
+      font-size: 13px; font-weight: 500; color: var(--gray-50);
+      cursor: pointer; white-space: nowrap;
+      transition: background var(--duration-fast), color var(--duration-fast);
+      font-family: inherit;
+    }
+    .gnav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .gnav-item:hover { background: var(--gray-160); color: var(--gray-10); }
+    .gnav-item.is-active { background: var(--primary-xlight); color: var(--primary); font-weight: 600; }
+    .gnav-item:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 999px; }
+    .gnav-sep { width: 1px; height: 24px; background: var(--gray-150); flex-shrink: 0; margin: 0 4px; }
+    .gnav-cta {
+      display: flex; align-items: center; gap: 6px;
+      padding: 0 14px; height: 36px;
+      border: none; background: var(--primary); color: var(--white);
+      border-radius: 999px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+      font-family: inherit;
+      transition: opacity var(--duration-fast);
+    }
+    .gnav-cta:hover { opacity: .88; }
+    .gnav-cta--gold {
+      background: linear-gradient(135deg, #1a3a6e 0%, var(--primary-mid) 100%);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+
+    .global-nav__utilities {
+      display: flex; align-items: center;
+      background: var(--white);
+      border-radius: 999px;
+      box-shadow: var(--shadow-01);
+      padding: 4px 6px;
+      gap: 2px;
+      height: 44px;
+      margin-left: auto;
+    }
+    .gnav-icon {
+      width: 36px; height: 36px;
+      border: none; background: transparent;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gray-80); cursor: pointer;
+      transition: background var(--duration-fast);
+    }
+    .gnav-icon:hover { background: var(--gray-160); color: var(--gray-10); }
+    .gnav-icon svg { width: 20px; height: 20px; }
+    .avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--primary); color: var(--white);
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .shell { display: flex; margin-top: var(--topnav-h); min-height: calc(100vh - var(--topnav-h)); }
+    .main {
+      flex: 1;
+      padding: 24px 20px 48px;
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Upsell strip (top) */
+    .upsell-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      background: linear-gradient(90deg, var(--primary-xlight) 0%, var(--secondary-light) 100%);
+      border: 1px solid var(--primary-light);
+      border-radius: 16px;
+      padding: 12px 18px;
+      margin-bottom: 20px;
+    }
+    .upsell-strip__left {
+      display: flex; align-items: center; gap: 12px;
+      min-width: 0;
+    }
+    .upsell-strip__tag {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--secondary);
+      background: var(--white);
+      border-radius: 99px;
+      padding: 4px 10px;
+      flex-shrink: 0;
+    }
+    .upsell-strip__text {
+      font-size: 14px;
+      color: var(--gray-10);
+      line-height: 1.35;
+    }
+    .upsell-strip__text strong { color: var(--primary-dark); }
+    .upsell-strip__cta {
+      flex-shrink: 0;
+      height: 40px;
+      padding: 0 18px;
+      border: none;
+      border-radius: var(--radius-btn);
+      background: var(--primary);
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity var(--duration-fast);
+    }
+    .upsell-strip__cta:hover { opacity: .9; }
+
+    /* Variantes da faixa comercial */
+    .upsell-strip--flash {
+      background: linear-gradient(90deg, #1a0a3e 0%, var(--primary-mid) 40%, #5c1a6e 100%);
+      border-color: rgba(255,255,255,.2);
+      color: var(--white);
+    }
+    .upsell-strip--flash .upsell-strip__tag {
+      background: rgba(255,255,255,.2);
+      color: var(--white);
+    }
+    .upsell-strip--flash .upsell-strip__text { color: rgba(255,255,255,.95); }
+    .upsell-strip--flash .upsell-strip__text strong { color: #FFD966; }
+    .upsell-strip--flash .upsell-strip__cta {
+      background: var(--white);
+      color: var(--primary-dark);
+    }
+    .upsell-strip--expired {
+      opacity: .72;
+      background: var(--gray-160);
+      border-style: dashed;
+      border-color: var(--gray-130);
+    }
+    .upsell-strip--expired .upsell-strip__tag {
+      background: var(--gray-150);
+      color: var(--gray-50);
+    }
+    .upsell-strip--cupom {
+      background: linear-gradient(90deg, var(--success-light) 0%, var(--primary-xlight) 100%);
+      border-color: rgba(31,102,52,.2);
+    }
+    .upsell-strip--cupom .upsell-strip__tag { color: var(--success); }
+    .upsell-strip--pulse .upsell-strip__tag {
+      animation: tag-pulse 2s ease-in-out infinite;
+    }
+    @keyframes tag-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0,55,255,.35); }
+      50% { box-shadow: 0 0 0 6px rgba(0,55,255,0); }
+    }
+
+    /* Hero comercial */
+    .hero-commercial {
+      position: relative;
+      border-radius: var(--radius-card);
+      padding: 28px 28px 32px;
+      margin-bottom: 24px;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 60% at 100% 0%, rgba(0,55,255,.18) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 50% at 0% 100%, rgba(0,95,143,.12) 0%, transparent 50%),
+        linear-gradient(145deg, #0a1744 0%, var(--primary-dark) 45%, #0d2d6e 100%);
+      color: var(--white);
+      box-shadow: var(--shadow-04);
+    }
+    .hero-commercial::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23ffffff' fill-opacity='.03'%3E%3Cpath d='M0 0h40v40H0zM40 40h40v40H40z'/%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    .hero-commercial__inner { position: relative; z-index: 1; }
+    .hero-commercial__eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      opacity: .75;
+      margin-bottom: 10px;
+    }
+    .hero-commercial__title {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 3.5vw, 2rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -.02em;
+      max-width: 32ch;
+      margin-bottom: 10px;
+    }
+    .hero-commercial__sub {
+      font-size: 15px;
+      line-height: 1.45;
+      opacity: .88;
+      max-width: 42ch;
+      margin-bottom: 22px;
+    }
+    .hero-commercial__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .btn-hero-primary {
+      height: 46px;
+      padding: 0 22px;
+      border: none;
+      border-radius: var(--radius-btn);
+      background: var(--white);
+      color: var(--primary-dark);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.2);
+      transition: transform var(--duration-fast), box-shadow var(--duration-fast);
+    }
+    .btn-hero-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(0,0,0,.25); }
+    .btn-hero-ghost {
+      height: 46px;
+      padding: 0 20px;
+      border: 1.5px solid rgba(255,255,255,.35);
+      border-radius: var(--radius-btn);
+      background: rgba(255,255,255,.08);
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(6px);
+      transition: background var(--duration-fast);
+    }
+    .btn-hero-ghost:hover { background: rgba(255,255,255,.16); }
+
+    .hero-commercial--urgency {
+      background:
+        radial-gradient(ellipse 70% 50% at 90% 20%, rgba(255,80,80,.15) 0%, transparent 50%),
+        linear-gradient(145deg, #2d0a1a 0%, var(--primary-dark) 50%, #1a0a40 100%);
+    }
+    .hero-commercial--domicilio {
+      background:
+        radial-gradient(ellipse 80% 60% at 0% 100%, rgba(0,95,143,.25) 0%, transparent 55%),
+        linear-gradient(145deg, #062238 0%, var(--secondary) 45%, var(--primary-dark) 100%);
+    }
+
+    /* Destaques serviços */
+    .services-spotlight {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 900px) {
+      .services-spotlight { grid-template-columns: 1fr; }
+    }
+    .spotlight-card {
+      position: relative;
+      border-radius: var(--radius-card);
+      padding: 22px 22px 20px;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      border: 1px solid var(--gray-150);
+      background: var(--white);
+      box-shadow: var(--shadow-01);
+      cursor: pointer;
+      transition: box-shadow var(--duration-fast), transform var(--duration-fast);
+      font-family: inherit;
+      color: inherit;
+    }
+    .spotlight-card:hover {
+      box-shadow: var(--shadow-04);
+      transform: translateY(-2px);
+    }
+    .spotlight-card:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 3px;
+    }
+    .spotlight-card--card {
+      background: linear-gradient(165deg, var(--accent-gold-light) 0%, var(--white) 55%);
+      border-color: rgba(196,160,53,.25);
+    }
+    .spotlight-card--home {
+      background: linear-gradient(165deg, var(--primary-xlight) 0%, var(--white) 50%);
+      border-color: var(--primary-light);
+    }
+    .spotlight-card__badge {
+      align-self: flex-start;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 99px;
+      margin-bottom: 12px;
+    }
+    .spotlight-card--card .spotlight-card__badge {
+      background: rgba(196,160,53,.2);
+      color: #7a6220;
+    }
+    .spotlight-card--home .spotlight-card__badge {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+    }
+    .spotlight-card__title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--gray-10);
+      margin-bottom: 8px;
+      letter-spacing: -.02em;
+    }
+    .spotlight-card__desc {
+      font-size: 14px;
+      color: var(--gray-50);
+      line-height: 1.45;
+      flex: 1;
+      margin-bottom: 16px;
+    }
+    .spotlight-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: auto;
+    }
+    .spotlight-card__perks {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    .spotlight-card__arrow {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--gray-160);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-dark);
+      flex-shrink: 0;
+      transition: background var(--duration-fast), color var(--duration-fast);
+    }
+    .spotlight-card:hover .spotlight-card__arrow {
+      background: var(--primary);
+      color: var(--white);
+    }
+    .spotlight-card__arrow svg { width: 18px; height: 18px; }
+
+    .spotlight-card.is-muted {
+      opacity: .55;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+    .spotlight-card.is-waitlist {
+      border-style: dashed;
+      background: var(--gray-160);
+    }
+    .spotlight-card__ribbon {
+      position: absolute;
+      top: 14px;
+      right: -32px;
+      background: var(--primary);
+      color: var(--white);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 4px 36px;
+      transform: rotate(45deg);
+      box-shadow: var(--shadow-01);
+    }
+    .spotlight-card { position: relative; overflow: hidden; }
+    .commercial-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--success);
+      background: var(--success-light);
+      border-radius: 99px;
+      padding: 3px 10px;
+      margin-top: 8px;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 20px;
+      align-items: start;
+    }
+    @media (max-width: 1024px) {
+      .content-grid { grid-template-columns: 1fr; }
+    }
+    .col-main { display: flex; flex-direction: column; gap: 20px; }
+    .col-side { display: flex; flex-direction: column; gap: 20px; }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--radius-card);
+      padding: 24px;
+      box-shadow: var(--shadow-01);
+      border: 1px solid rgba(0,0,0,.04);
+    }
+    .card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .card__title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card__title svg { width: 18px; height: 18px; color: var(--primary); }
+    .card__link {
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: 600;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      min-height: 44px;
+      padding: 0 4px;
+    }
+    .card__link:hover { text-decoration: underline; }
+
+    /* Próxima data */
+    .next-date-card {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-mid) 55%, var(--primary) 100%);
+      border-radius: var(--radius-card);
+      padding: 24px;
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+    .next-date-card::before {
+      content: '';
+      position: absolute;
+      top: -30px; right: -20px;
+      width: 140px; height: 140px;
+      background: rgba(255,255,255,.06);
+      border-radius: 50%;
+    }
+    .next-date-card__label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      opacity: .75;
+      margin-bottom: 14px;
+      position: relative;
+    }
+    .next-date-card__body {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      position: relative;
+    }
+    .date-badge {
+      background: rgba(255,255,255,.14);
+      border-radius: 14px;
+      padding: 10px 14px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,.2);
+      flex-shrink: 0;
+    }
+    .date-badge__day { font-size: 28px; font-weight: 700; line-height: 1; }
+    .date-badge__month { font-size: 12px; opacity: .85; margin-top: 4px; }
+    .date-info__name { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .date-info__meta {
+      font-size: 13px;
+      opacity: .88;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .date-info__meta span { display: flex; align-items: center; gap: 6px; }
+    .date-info__meta svg { width: 14px; height: 14px; opacity: .75; flex-shrink: 0; }
+    .next-date-card__bundle {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,.2);
+      position: relative;
+    }
+    .bundle-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      opacity: .75;
+      margin-bottom: 10px;
+    }
+    .bundle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: rgba(0,0,0,.15);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .bundle-row__text { font-size: 13px; line-height: 1.4; flex: 1; min-width: 0; }
+    .bundle-row__text strong { font-weight: 700; }
+    .bundle-row__cta {
+      flex-shrink: 0;
+      height: 38px;
+      padding: 0 16px;
+      border: none;
+      border-radius: var(--radius-btn);
+      background: var(--white);
+      color: var(--primary-dark);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .bundle-row__cta:hover { opacity: .92; }
+    .next-date-card.is-empty {
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-80) 100%);
+    }
+    .next-date-card__empty {
+      position: relative;
+      text-align: left;
+      padding: 8px 0 4px;
+    }
+    .next-date-card__empty-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .next-date-card__empty-copy { font-size: 14px; opacity: .88; margin-bottom: 16px; line-height: 1.45; }
+    .next-date-card__empty-cta {
+      height: 44px;
+      padding: 0 22px;
+      border: none;
+      border-radius: var(--radius-btn);
+      background: var(--white);
+      color: var(--primary-dark);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* Cross-sell lista */
+    .cross-list { display: flex; flex-direction: column; gap: 0; }
+    .cross-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--gray-150);
+    }
+    .cross-item:last-child { border-bottom: none; }
+    .cross-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: var(--success-light);
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .cross-icon svg { width: 20px; height: 20px; }
+    .cross-info { flex: 1; min-width: 0; }
+    .cross-info__name { font-size: 14px; font-weight: 600; }
+    .cross-info__meta { font-size: 12px; color: var(--gray-80); margin-top: 2px; }
+    .cross-price {
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .cross-price__from { font-size: 11px; color: var(--gray-80); text-decoration: line-through; }
+    .cross-price__to { font-size: 15px; font-weight: 700; color: var(--primary-dark); }
+    .cross-cta {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: var(--radius-btn);
+      border: 1.5px solid var(--primary);
+      background: var(--white);
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      flex-shrink: 0;
+    }
+    .cross-cta:hover { background: var(--primary-xlight); }
+    .cross-item { position: relative; }
+    .cross-ribbon {
+      position: absolute;
+      left: 0;
+      top: 12px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      background: var(--warning);
+      color: var(--white);
+      padding: 2px 8px;
+      border-radius: 0 6px 6px 0;
+    }
+
+    /* Sidebar wallet */
+    .wallet-widget {
+      background: linear-gradient(180deg, var(--gray-10) 0%, #2a2f4a 100%);
+      color: var(--white);
+      border-radius: var(--radius-card);
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .wallet-widget::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 120px; height: 120px;
+      background: radial-gradient(circle, rgba(0,55,255,.35) 0%, transparent 70%);
+    }
+    .wallet-widget__brand {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      opacity: .65;
+      margin-bottom: 6px;
+      position: relative;
+    }
+    .wallet-widget__title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      position: relative;
+    }
+    .wallet-widget__balance {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      margin-bottom: 4px;
+      position: relative;
+    }
+    .wallet-widget__hint { font-size: 13px; opacity: .75; margin-bottom: 18px; position: relative; }
+    .wallet-widget__actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+    }
+    .wallet-btn {
+      height: 44px;
+      border-radius: var(--radius-btn);
+      border: none;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: opacity var(--duration-fast);
+    }
+    .wallet-btn--primary { background: var(--white); color: var(--primary-dark); }
+    .wallet-btn--ghost {
+      background: rgba(255,255,255,.1);
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,.25);
+    }
+    .wallet-btn:hover { opacity: .92; }
+    .wallet-widget__card-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      position: relative;
+      font-size: 12px;
+      opacity: .85;
+    }
+    .wallet-widget__chip {
+      font-family: ui-monospace, monospace;
+      letter-spacing: .12em;
+      background: rgba(255,255,255,.12);
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.2);
+    }
+    .wallet-widget__meter {
+      height: 6px;
+      border-radius: 99px;
+      background: rgba(255,255,255,.15);
+      margin-bottom: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .wallet-widget__meter-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--primary-light), var(--white));
+      transition: width .4s ease;
+    }
+    .wallet-widget__meter-label {
+      font-size: 11px;
+      opacity: .65;
+      margin-bottom: 6px;
+      position: relative;
+    }
+    .wallet-widget--zero .wallet-widget__balance { opacity: .5; }
+    .wallet-widget--lead {
+      background: linear-gradient(180deg, #1e2a5c 0%, var(--primary-dark) 100%);
+    }
+    .wallet-widget__bullets {
+      font-size: 13px;
+      line-height: 1.5;
+      opacity: .85;
+      margin-bottom: 16px;
+      position: relative;
+      padding-left: 0;
+      list-style: none;
+    }
+    .wallet-widget__bullets li {
+      padding-left: 18px;
+      position: relative;
+      margin-bottom: 6px;
+    }
+    .wallet-widget__bullets li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #7dffb8;
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    .domiciliar-widget {
+      border-radius: var(--radius-card);
+      padding: 20px;
+      background: var(--white);
+      border: 1px solid var(--gray-150);
+      box-shadow: var(--shadow-01);
+    }
+    .domiciliar-widget__img {
+      height: 100px;
+      border-radius: 14px;
+      background:
+        linear-gradient(120deg, var(--secondary-light) 0%, var(--primary-xlight) 100%);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--secondary);
+    }
+    .domiciliar-widget__img svg { width: 40px; height: 40px; opacity: .85; }
+    .domiciliar-widget__title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .domiciliar-widget__text { font-size: 13px; color: var(--gray-50); line-height: 1.45; margin-bottom: 14px; }
+    .domiciliar-widget__cta {
+      width: 100%;
+      height: 44px;
+      border: none;
+      border-radius: var(--radius-btn);
+      background: var(--primary);
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .domiciliar-widget__cta:hover { opacity: .92; }
+    .domiciliar-widget__badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--secondary);
+      margin-bottom: 8px;
+    }
+    .domiciliar-widget--waitlist .domiciliar-widget__img {
+      background: linear-gradient(120deg, var(--warning-light) 0%, var(--gray-160) 100%);
+      color: var(--warning);
+    }
+    .domiciliar-widget--unavailable .domiciliar-widget__img {
+      background: var(--gray-160);
+      color: var(--gray-80);
+    }
+    .domiciliar-widget__cta--secondary {
+      background: var(--white);
+      color: var(--primary);
+      border: 1.5px solid var(--primary);
+      margin-top: 8px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Painel de cenários (playground) */
+    .scenario-panel {
+      position: fixed;
+      bottom: 16px;
+      left: 16px;
+      z-index: 220;
+      max-width: min(420px, calc(100vw - 32px));
+      font-size: 12px;
+    }
+    .scenario-panel__toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 99px;
+      background: var(--primary-dark);
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: var(--shadow-04);
+    }
+    .scenario-panel__toggle svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .scenario-panel__drawer {
+      display: none;
+      margin-top: 10px;
+      background: var(--white);
+      border: 1px solid var(--gray-150);
+      border-radius: 16px;
+      box-shadow: var(--shadow-04);
+      max-height: min(70vh, 520px);
+      overflow: auto;
+    }
+    .scenario-panel.is-open .scenario-panel__drawer { display: block; }
+    .scenario-panel__head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--gray-150);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .scenario-panel__close {
+      border: none;
+      background: var(--gray-160);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+    }
+    .scenario-module {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--gray-150);
+    }
+    .scenario-module:last-child { border-bottom: none; }
+    .scenario-module__label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--gray-80);
+      margin-bottom: 8px;
+    }
+    .scenario-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .scenario-chip {
+      padding: 6px 11px;
+      border-radius: 99px;
+      border: 1px solid var(--gray-150);
+      background: var(--gray-160);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      color: var(--gray-50);
+      transition: background var(--duration-fast), border-color var(--duration-fast), color var(--duration-fast);
+    }
+    .scenario-chip:hover { border-color: var(--primary-light); color: var(--primary-dark); }
+    .scenario-chip.is-active {
+      background: var(--primary-xlight);
+      border-color: var(--primary);
+      color: var(--primary-dark);
+    }
+    .scenario-presets {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .scenario-preset {
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--gray-150);
+      background: var(--gray-160);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-10);
+      transition: border-color var(--duration-fast), background var(--duration-fast);
+    }
+    .scenario-preset:hover { border-color: var(--primary); background: var(--white); }
+    .scenario-preset small {
+      display: block;
+      font-weight: 500;
+      color: var(--gray-80);
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .playground-dock {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    .playground-dock__btn {
+      background: var(--gray-10);
+      color: var(--white);
+      border: none;
+      border-radius: 99px;
+      padding: 10px 18px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: var(--shadow-04);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      opacity: .92;
+    }
+    .playground-dock__btn:hover { opacity: 1; }
+    span.playground-dock__btn { cursor: default; pointer-events: none; }
+    .playground-dock__links {
+      background: var(--white);
+      border: 1px solid var(--gray-150);
+      border-radius: 14px;
+      padding: 10px;
+      box-shadow: var(--shadow-04);
+      font-size: 12px;
+      max-width: 260px;
+    }
+    .playground-dock__links a {
+      display: block;
+      padding: 8px 10px;
+      color: var(--primary);
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    .playground-dock__links a:hover { background: var(--gray-160); }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="proto-badge" role="note">Nav 360 · Visão comercial</div>
+
+  <nav class="global-nav" aria-label="Barra superior">
+    <a class="global-nav__logo" href="#" aria-label="Nav Dasa — início">
+      <div class="logo-mark" aria-hidden="true">
+        <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M9 2L15 5.5V12.5L9 16L3 12.5V5.5L9 2Z" fill="white" opacity=".9"/>
+          <path d="M9 6L12 7.75V11.25L9 13L6 11.25V7.75L9 6Z" fill="white"/>
+        </svg>
+      </div>
+      <span class="logo-name">Nav <span>Dasa</span></span>
+    </a>
+
+    <nav class="global-nav__primary" aria-label="Navegação principal">
+      <button type="button" class="gnav-item is-active" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Início
+      </button>
+      <button type="button" class="gnav-item">Benefícios</button>
+      <button type="button" class="gnav-item">Sua saúde</button>
+      <button type="button" class="gnav-item">Exames</button>
+      <span class="gnav-sep" role="separator" aria-hidden="true"></span>
+      <button type="button" class="gnav-cta gnav-cta--gold" aria-label="Conhecer Cartão Dasa">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Cartão Dasa
+      </button>
+      <button type="button" class="gnav-cta" aria-label="Agendar exame ou consulta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Agendar
+      </button>
+    </nav>
+
+    <div class="global-nav__utilities">
+      <button type="button" class="gnav-icon" aria-label="Notificações">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </button>
+      <button type="button" class="gnav-icon" aria-label="Conta">
+        <div class="avatar" aria-hidden="true">AB</div>
+      </button>
+    </div>
+  </nav>
+
+  <div class="shell">
+    <main class="main" id="main-content">
+      <section id="commercial-strip" class="upsell-strip upsell-strip--pulse" aria-label="Oferta contextual" data-commercial="strip">
+        <div class="upsell-strip__left">
+          <span class="upsell-strip__tag">Só no app</span>
+          <p class="upsell-strip__text">
+            <strong>12x sem juros</strong> em exames selecionados com Cartão Dasa · válido até 30/04
+          </p>
+        </div>
+        <button type="button" class="upsell-strip__cta">
+          Ver condições
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </section>
+
+      <header id="commercial-hero" class="hero-commercial" aria-labelledby="hero-title" data-commercial="hero">
+        <div class="hero-commercial__inner">
+          <p class="hero-commercial__eyebrow">Cuidado completo na palma da mão</p>
+          <h1 id="hero-title" class="hero-commercial__title">Sua saúde com mais benefícios — do laboratório ao conforto da sua casa</h1>
+          <p class="hero-commercial__sub">
+            Combine exames, consultas e atendimento domiciliar com vantagens do Cartão Dasa. Menos fricção, mais previsibilidade no seu bolso.
+          </p>
+          <div class="hero-commercial__actions">
+            <button type="button" class="btn-hero-primary">
+              Explorar ofertas para mim
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+            <button type="button" class="btn-hero-ghost">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              Agendar coleta em casa
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <section aria-labelledby="spotlight-title">
+        <h2 id="spotlight-title" class="visually-hidden">Serviços em destaque</h2>
+        <div class="services-spotlight" id="commercial-spotlight" data-commercial="spotlight">
+          <button type="button" class="spotlight-card spotlight-card--card" aria-describedby="card-desc">
+            <span class="spotlight-card__ribbon" id="spotlight-card-ribbon" hidden>Destaque</span>
+            <span class="spotlight-card__badge">Pagamento &amp; benefícios</span>
+            <span class="spotlight-card__title">Cartão Dasa</span>
+            <span id="card-desc" class="spotlight-card__desc">
+              Parcelamento inteligente, cashback em serviços da rede e limite pré-aprovado para você e dependentes.
+            </span>
+            <span class="commercial-pill" id="spotlight-card-pill" hidden>Limite pré-aprovado disponível</span>
+            <div class="spotlight-card__footer">
+              <span class="spotlight-card__perks">Até 5% de volta · Rede nacional</span>
+              <span class="spotlight-card__arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </span>
+            </div>
+          </button>
+
+          <button type="button" class="spotlight-card spotlight-card--home" aria-describedby="home-desc">
+            <span class="spotlight-card__badge" id="spotlight-home-badge">Onde você estiver</span>
+            <span class="spotlight-card__title">Atendimento domiciliar</span>
+            <span id="home-desc" class="spotlight-card__desc">
+              Coleta de exames, vacinas e pequenos procedimentos sem sair de casa — agendamento em poucos toques.
+            </span>
+            <div class="spotlight-card__footer">
+              <span class="spotlight-card__perks" id="spotlight-home-perks">Disponível em grandes capitais</span>
+              <span class="spotlight-card__arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </span>
+            </div>
+          </button>
+        </div>
+      </section>
+
+      <div class="content-grid">
+        <div class="col-main">
+          <section id="commercial-agenda" class="next-date-card" aria-labelledby="next-label" data-commercial="agenda">
+            <p id="next-label" class="next-date-card__label">Próxima data</p>
+            <div id="agenda-filled">
+              <div class="next-date-card__body">
+                <div class="date-badge" aria-hidden="true">
+                  <div class="date-badge__day">28</div>
+                  <div class="date-badge__month">mar</div>
+                </div>
+                <div>
+                  <div class="date-info__name">Hemograma completo + perfil lipídico</div>
+                  <div class="date-info__meta">
+                    <span>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      Sexta-feira · 8h30 · Delboni Sumaré
+                    </span>
+                    <span id="agenda-pay-line">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                      Pagamento com Cartão Dasa · 10x sem juros
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="next-date-card__bundle" id="agenda-bundle-block">
+                <p class="bundle-label">Upsell contextual</p>
+                <div class="bundle-row">
+                  <p class="bundle-row__text" id="agenda-bundle-text">
+                    Pacientes que fizeram esse combo também adicionaram <strong>TSH e vitamina D</strong> — economize 18% no pacote.
+                  </p>
+                  <button type="button" class="bundle-row__cta">Incluir no pedido</button>
+                </div>
+              </div>
+            </div>
+            <div id="agenda-empty" class="next-date-card__empty" hidden>
+              <p class="next-date-card__empty-title">Nenhum agendamento futuro</p>
+              <p class="next-date-card__empty-copy">Aproveite o cashback do Cartão Dasa e monte seu check-up com parcelamento facilitado.</p>
+              <button type="button" class="next-date-card__empty-cta">Ver pacotes em destaque</button>
+            </div>
+          </section>
+
+          <section class="card" aria-labelledby="cross-title" id="commercial-cross" data-commercial="cross">
+            <div class="card__header">
+              <h2 id="cross-title" class="card__title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                Sugestões para fechar seu cuidado
+              </h2>
+              <button type="button" class="card__link">Personalizar</button>
+            </div>
+            <div class="cross-list">
+              <div class="cross-item">
+                <span class="cross-ribbon" id="cross-ribbon-1">Oferta</span>
+                <div class="cross-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                </div>
+                <div class="cross-info">
+                  <div class="cross-info__name">Consulta de retorno · Endocrino</div>
+                  <div class="cross-info__meta">Alinhar resultado de tireoide com seu histórico</div>
+                </div>
+                <div class="cross-price">
+                  <div class="cross-price__from">R$ 380</div>
+                  <div class="cross-price__to">R$ 299</div>
+                </div>
+                <button type="button" class="cross-cta">Reservar</button>
+              </div>
+              <div class="cross-item" id="cross-item-2">
+                <span class="cross-ribbon" id="cross-ribbon-2">Cartão</span>
+                <div class="cross-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                </div>
+                <div class="cross-info">
+                  <div class="cross-info__name">Coleta domiciliar · mesmo pedido médico</div>
+                  <div class="cross-info__meta">Taxa reduzida com Cartão Dasa</div>
+                </div>
+                <div class="cross-price">
+                  <div class="cross-price__from">R$ 45</div>
+                  <div class="cross-price__to">R$ 29</div>
+                </div>
+                <button type="button" class="cross-cta">Agendar</button>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="col-side" aria-label="Benefícios e serviços">
+          <div class="wallet-widget" id="commercial-wallet" data-commercial="wallet">
+            <p class="wallet-widget__brand">Cartão Dasa</p>
+            <div class="wallet-widget__card-line" id="wallet-card-line">
+              <span>Virtual</span>
+              <span class="wallet-widget__chip" aria-label="Final do cartão">···· 4821</span>
+            </div>
+            <p class="wallet-widget__meter-label" id="wallet-meter-label">Próximo nível de cashback</p>
+            <div class="wallet-widget__meter" aria-hidden="true">
+              <div class="wallet-widget__meter-fill" id="wallet-meter-fill" style="width: 68%;"></div>
+            </div>
+            <h3 class="wallet-widget__title">Saldo de benefícios</h3>
+            <p class="wallet-widget__balance" id="wallet-balance" aria-label="Saldo disponível">R$ 127,40</p>
+            <p class="wallet-widget__hint" id="wallet-hint">Cashback acumulado · use em exames e consultas na rede</p>
+            <ul class="wallet-widget__bullets" id="wallet-bullets" hidden>
+              <li>Parcelamento em até 12x sem juros em serviços selecionados</li>
+              <li>Cashback automático na fatura</li>
+            </ul>
+            <div class="wallet-widget__actions" id="wallet-actions">
+              <button type="button" class="wallet-btn wallet-btn--primary" id="wallet-cta-primary">Usar benefício agora</button>
+              <button type="button" class="wallet-btn wallet-btn--ghost" id="wallet-cta-ghost">Ver fatura e limite</button>
+            </div>
+          </div>
+
+          <div class="domiciliar-widget" id="commercial-domicilio" data-commercial="domicilio">
+            <span class="domiciliar-widget__badge" id="domicilio-badge">Sua região</span>
+            <div class="domiciliar-widget__img" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <h3 class="domiciliar-widget__title">Atendimento domiciliar</h3>
+            <p class="domiciliar-widget__text" id="domicilio-text">
+              Escolha data e turno; equipe credenciada vai até você com os mesmos padrões de qualidade dos nossos laboratórios.
+            </p>
+            <button type="button" class="domiciliar-widget__cta" id="domicilio-cta-main">Simular visita</button>
+            <button type="button" class="domiciliar-widget__cta domiciliar-widget__cta--secondary" id="domicilio-cta-secondary" hidden>Ver outras unidades</button>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <div class="scenario-panel" id="scenarioPanel">
+    <button type="button" class="scenario-panel__toggle" id="scenarioPanelToggle" aria-expanded="false" aria-controls="scenarioDrawer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14"/></svg>
+      Cenários comerciais
+    </button>
+    <div class="scenario-panel__drawer" id="scenarioDrawer" role="region" aria-label="Painel de cenários do playground">
+      <div class="scenario-panel__head">
+        Cenários
+        <button type="button" class="scenario-panel__close" id="scenarioPanelClose" aria-label="Fechar painel">✕</button>
+      </div>
+      <div class="scenario-module">
+        <div class="scenario-module__label">Presets rápidos</div>
+        <div class="scenario-presets" id="scenarioPresets"></div>
+      </div>
+      <div class="scenario-module">
+        <div class="scenario-module__label">Faixa superior</div>
+        <div class="scenario-chips" id="chipsStrip" data-key="strip"></div>
+      </div>
+      <div class="scenario-module">
+        <div class="scenario-module__label">Hero</div>
+        <div class="scenario-chips" id="chipsHero" data-key="hero"></div>
+      </div>
+      <div class="scenario-module">
+        <div class="scenario-module__label">Destaques (Cartão / Domiciliar)</div>
+        <div class="scenario-chips" id="chipsSpotlight" data-key="spotlight"></div>
+      </div>
+      <div class="scenario-module">
+        <div class="scenario-module__label">Próxima data &amp; bundle</div>
+        <div class="scenario-chips" id="chipsAgenda" data-key="agenda"></div>
+      </div>
+      <div class="scenario-module">
+        <div class="scenario-module__label">Carteira Cartão Dasa</div>
+        <div class="scenario-chips" id="chipsWallet" data-key="wallet"></div>
+      </div>
+      <div class="scenario-module">
+        <div class="scenario-module__label">Atendimento domiciliar</div>
+        <div class="scenario-chips" id="chipsDomicilio" data-key="domicilio"></div>
+      </div>
+      <div class="scenario-module">
+        <div class="scenario-module__label">Cross-sell</div>
+        <div class="scenario-chips" id="chipsCross" data-key="cross"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="playground-dock">
+    <nav class="playground-dock__links" aria-label="Outros protótipos do playground">
+      <a href="nav360-home.html">Home padrão (estados)</a>
+      <a href="nav360-var2-shortcuts.html">Var 2 · Atalhos</a>
+      <a href="nav360-var1-col-side.html">Var 1 · Col-Side</a>
+    </nav>
+    <span class="playground-dock__btn" role="status">Playground · visão comercial</span>
+  </div>
+
+  <script>
+(function () {
+  const state = {
+    strip: 'promo',
+    hero: 'default',
+    spotlight: 'both',
+    agenda: 'bundle',
+    wallet: 'balance',
+    domicilio: 'ok',
+    cross: 'duo',
+  };
+
+  const STRIP = {
+    promo: {
+      cls: ['upsell-strip--pulse'],
+      tag: 'Só no app',
+      html: '<strong>12x sem juros</strong> em exames selecionados com Cartão Dasa · válido até 30/04',
+      cta: 'Ver condições',
+    },
+    flash: {
+      cls: ['upsell-strip--flash', 'upsell-strip--pulse'],
+      tag: 'Últimas horas',
+      html: '<strong>Frete grátis</strong> em coleta domiciliar para pedidos acima de R$ 200 · encerra à meia-noite',
+      cta: 'Resgatar agora',
+    },
+    cupom: {
+      cls: ['upsell-strip--cupom'],
+      tag: 'Cupom',
+      html: '<strong>LAB20</strong> · 20% em pacotes de check-up em unidades participantes · 1 uso por CPF',
+      cta: 'Aplicar cupom',
+    },
+    cashback: {
+      cls: [],
+      tag: 'Cashback turbo',
+      html: '<strong>3x mais cashback</strong> na categoria vacinas esta semana · Cartão Dasa',
+      cta: 'Ver regras',
+    },
+    none: { cls: [], tag: '', html: '', cta: '', hidden: true },
+    expired: {
+      cls: ['upsell-strip--expired'],
+      tag: 'Encerrada',
+      html: 'A campanha de 15x sem juros terminou em 18/03. Confira as ofertas atuais.',
+      cta: 'Ver ofertas atuais',
+    },
+  };
+
+  const HERO = {
+    default: {
+      cls: [],
+      eyebrow: 'Cuidado completo na palma da mão',
+      title: 'Sua saúde com mais benefícios — do laboratório ao conforto da sua casa',
+      sub: 'Combine exames, consultas e atendimento domiciliar com vantagens do Cartão Dasa. Menos fricção, mais previsibilidade no seu bolso.',
+      primary: 'Explorar ofertas para mim',
+      ghost: 'Agendar coleta em casa',
+    },
+    urgency: {
+      cls: ['hero-commercial--urgency'],
+      eyebrow: 'Oferta limitada',
+      title: 'Check-up completo com até 35% off — encerra em 48h',
+      sub: 'Priorize exames com quem já conhece seu histórico. Use Cartão Dasa e parcelamento sem surpresas.',
+      primary: 'Montar meu pacote',
+      ghost: 'Falar com especialista',
+    },
+    domicilio: {
+      cls: ['hero-commercial--domicilio'],
+      eyebrow: 'Sem sair de casa',
+      title: 'Coleta e vacinas no seu endereço — agenda em minutos',
+      sub: 'Mesma qualidade dos laboratórios Dasa, com rastreio e confirmação por SMS. Taxa promocional com Cartão Dasa.',
+      primary: 'Simular horários',
+      ghost: 'Ver cobertura no mapa',
+    },
+  };
+
+  const SPOTLIGHT = {
+    both: {
+      cardMuted: false,
+      cardRibbon: false,
+      cardPill: false,
+      homeWait: false,
+      homeMuted: false,
+      homeBadge: 'Onde você estiver',
+      homePerks: 'Disponível em grandes capitais',
+      homeDesc: 'Coleta de exames, vacinas e pequenos procedimentos sem sair de casa — agendamento em poucos toques.',
+    },
+    cardFocus: {
+      cardMuted: false,
+      cardRibbon: true,
+      cardPill: true,
+      homeWait: false,
+      homeMuted: false,
+      homeBadge: 'Onde você estiver',
+      homePerks: 'Disponível em grandes capitais',
+      homeDesc: 'Coleta de exames, vacinas e pequenos procedimentos sem sair de casa — agendamento em poucos toques.',
+    },
+    homeWait: {
+      cardMuted: true,
+      cardRibbon: false,
+      cardPill: false,
+      homeWait: true,
+      homeMuted: false,
+      homeBadge: 'Alta demanda',
+      homePerks: 'Lista de espera · média 4 dias',
+      homeDesc: 'Estamos priorizando coletas na sua região. Deixe uma janela de horário e avisamos quando liberar.',
+    },
+    homeOff: {
+      cardMuted: false,
+      cardRibbon: false,
+      cardPill: false,
+      homeWait: false,
+      homeMuted: true,
+      homeBadge: 'Indisponível na região',
+      homePerks: 'Veja unidades próximas ou receba alerta',
+      homeDesc: 'Ainda não atendemos domiciliar no seu CEP. Você pode retirar em unidade parceira ou ser avisado quando abrir.',
+    },
+  };
+
+  const AGENDA = {
+    bundle: { empty: false, bundle: true, pay: 'Pagamento com Cartão Dasa · 10x sem juros', bundleText: 'Pacientes que fizeram esse combo também adicionaram <strong>TSH e vitamina D</strong> — economize 18% no pacote.' },
+    noBundle: { empty: false, bundle: false, pay: 'Particular · Pix ou cartão na unidade', bundleText: '' },
+    empty: { empty: true, bundle: false, pay: '', bundleText: '' },
+  };
+
+  const WALLET = {
+    balance: {
+      cls: [],
+      balance: 'R$ 127,40',
+      hint: 'Cashback acumulado · use em exames e consultas na rede',
+      meter: true,
+      meterPct: 68,
+      meterLabel: 'Próximo nível de cashback',
+      cardLine: true,
+      bullets: false,
+      primary: 'Usar benefício agora',
+      ghost: 'Ver fatura e limite',
+      ghostShow: true,
+    },
+    zero: {
+      cls: ['wallet-widget--zero'],
+      balance: 'R$ 0,00',
+      hint: 'Nenhum cashback acumulado neste período · suas compras ainda geram benefício',
+      meter: true,
+      meterPct: 12,
+      meterLabel: 'Progresso para o 1º cashback',
+      cardLine: true,
+      bullets: false,
+      primary: 'Ver ofertas que geram cashback',
+      ghost: 'Ver fatura e limite',
+      ghostShow: true,
+    },
+    lead: {
+      cls: ['wallet-widget--lead'],
+      balance: '—',
+      hint: 'Você ainda não tem Cartão Dasa',
+      meter: false,
+      meterPct: 0,
+      meterLabel: '',
+      cardLine: false,
+      bullets: true,
+      primary: 'Pedir análise de crédito',
+      ghost: 'Comparar benefícios',
+      ghostShow: true,
+    },
+  };
+
+  const DOMICILIO = {
+    ok: {
+      cls: [],
+      badge: 'Sua região',
+      text: 'Escolha data e turno; equipe credenciada vai até você com os mesmos padrões de qualidade dos nossos laboratórios.',
+      main: 'Simular visita',
+      secondary: false,
+    },
+    waitlist: {
+      cls: ['domiciliar-widget--waitlist'],
+      badge: 'Demanda alta',
+      text: 'Não há horários livres nos próximos 3 dias. Entre na fila e garantimos o próximo slot na sua região.',
+      main: 'Entrar na fila',
+      secondary: true,
+    },
+    unavailable: {
+      cls: ['domiciliar-widget--unavailable'],
+      badge: 'Fora da área',
+      text: 'Domiciliar ainda não chegou ao seu CEP. Agende retirada em unidade ou ative alerta quando expandirmos.',
+      main: 'Ver unidades próximas',
+      secondary: true,
+    },
+  };
+
+  const CROSS = {
+    duo: { r1: 'Oferta', r2: 'Cartão', hide2: false },
+    single: { r1: 'Combo', r2: '', hide2: true },
+    partner: { r1: 'Parceiro', r2: 'Domiciliar', hide2: false },
+  };
+
+  const PRESETS = [
+    { id: 'baseline', label: 'Linha de base', desc: 'Promo na faixa, bundle, carteira com saldo, domiciliar ok.' },
+    { id: 'flash', label: 'Flash + urgência', desc: 'Faixa flash, hero urgência, ribbon no Cartão.' },
+    { id: 'lead', label: 'Sem cartão (lead)', desc: 'Carteira em modo lead, faixa fala de cartão, hero padrão.' },
+    { id: 'emptyAgenda', label: 'Sem agenda', desc: 'Sem próxima data; cross-sell único; foco em pacotes.' },
+    { id: 'domicilioStress', label: 'Stress domiciliar', desc: 'Lista de espera ou fora da área; spotlight em fila.' },
+    { id: 'expired', label: 'Campanha encerrada', desc: 'Faixa esmaecida; copy de campanha encerrada.' },
+  ];
+
+  const el = (id) => document.getElementById(id);
+
+  function renderStrip() {
+    const root = el('commercial-strip');
+    const cfg = STRIP[state.strip];
+    root.className = 'upsell-strip' + (cfg.cls.length ? ' ' + cfg.cls.join(' ') : '');
+    root.toggleAttribute('hidden', !!cfg.hidden);
+    root.setAttribute('aria-hidden', cfg.hidden ? 'true' : 'false');
+    if (cfg.hidden) return;
+    root.querySelector('.upsell-strip__tag').textContent = cfg.tag;
+    root.querySelector('.upsell-strip__text').innerHTML = cfg.html;
+    root.querySelector('.upsell-strip__cta').textContent = cfg.cta;
+    const svg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+    root.querySelector('.upsell-strip__cta').innerHTML = cfg.cta + svg;
+  }
+
+  function renderHero() {
+    const root = el('commercial-hero');
+    const h = HERO[state.hero];
+    root.className = 'hero-commercial' + (h.cls.length ? ' ' + h.cls.join(' ') : '');
+    root.querySelector('.hero-commercial__eyebrow').textContent = h.eyebrow;
+    root.querySelector('.hero-commercial__title').textContent = h.title;
+    root.querySelector('.hero-commercial__sub').textContent = h.sub;
+    const actions = root.querySelector('.hero-commercial__actions');
+    actions.innerHTML = `
+      <button type="button" class="btn-hero-primary">${h.primary}
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <button type="button" class="btn-hero-ghost">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        ${h.ghost}
+      </button>`;
+  }
+
+  function renderSpotlight() {
+    const s = SPOTLIGHT[state.spotlight];
+    const card = document.querySelector('.spotlight-card--card');
+    const home = document.querySelector('.spotlight-card--home');
+    const ribbon = el('spotlight-card-ribbon');
+    const pill = el('spotlight-card-pill');
+    card.classList.toggle('is-muted', s.cardMuted);
+    ribbon.hidden = !s.cardRibbon;
+    pill.hidden = !s.cardPill;
+    home.classList.toggle('is-waitlist', s.homeWait);
+    home.classList.toggle('is-muted', !!s.homeMuted);
+    el('spotlight-home-badge').textContent = s.homeBadge;
+    el('spotlight-home-perks').textContent = s.homePerks;
+    el('home-desc').textContent = s.homeDesc;
+  }
+
+  function renderAgenda() {
+    const a = AGENDA[state.agenda];
+    const section = el('commercial-agenda');
+    const filled = el('agenda-filled');
+    const empty = el('agenda-empty');
+    const bundleBlock = el('agenda-bundle-block');
+    section.classList.toggle('is-empty', a.empty);
+    filled.hidden = a.empty;
+    empty.hidden = !a.empty;
+    bundleBlock.hidden = !a.bundle;
+    if (!a.empty) {
+      el('agenda-pay-line').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> ' + a.pay;
+      el('agenda-bundle-text').innerHTML = a.bundleText;
+    }
+  }
+
+  function renderWallet() {
+    const w = WALLET[state.wallet];
+    const root = el('commercial-wallet');
+    root.className = 'wallet-widget' + (w.cls.length ? ' ' + w.cls.join(' ') : '');
+    el('wallet-balance').textContent = w.balance;
+    el('wallet-hint').textContent = w.hint;
+    el('wallet-meter-label').style.display = w.meter ? 'block' : 'none';
+    el('wallet-meter-label').textContent = w.meterLabel;
+    const meterEl = el('wallet-meter-fill').closest('.wallet-widget__meter');
+    if (meterEl) meterEl.style.display = w.meter ? 'block' : 'none';
+    el('wallet-meter-fill').style.width = w.meterPct + '%';
+    el('wallet-card-line').style.display = w.cardLine ? 'flex' : 'none';
+    el('wallet-bullets').hidden = !w.bullets;
+    el('wallet-cta-primary').textContent = w.primary;
+    el('wallet-cta-ghost').textContent = w.ghost;
+    el('wallet-cta-ghost').style.display = w.ghostShow ? 'flex' : 'none';
+    el('wallet-cta-ghost').setAttribute('aria-hidden', w.ghostShow ? 'false' : 'true');
+  }
+
+  function renderDomicilio() {
+    const d = DOMICILIO[state.domicilio];
+    const root = el('commercial-domicilio');
+    root.className = 'domiciliar-widget' + (d.cls.length ? ' ' + d.cls.join(' ') : '');
+    el('domicilio-badge').textContent = d.badge;
+    el('domicilio-text').textContent = d.text;
+    el('domicilio-cta-main').textContent = d.main;
+    el('domicilio-cta-secondary').hidden = !d.secondary;
+    el('domicilio-cta-secondary').style.display = d.secondary ? 'flex' : 'none';
+  }
+
+  function renderCross() {
+    const c = CROSS[state.cross];
+    el('cross-ribbon-1').textContent = c.r1;
+    el('cross-ribbon-2').textContent = c.r2;
+    el('cross-item-2').hidden = c.hide2;
+  }
+
+  function applyAll() {
+    renderStrip();
+    renderHero();
+    renderSpotlight();
+    renderAgenda();
+    renderWallet();
+    renderDomicilio();
+    renderCross();
+    syncChips();
+  }
+
+  function syncChips() {
+    document.querySelectorAll('.scenario-chips').forEach((wrap) => {
+      const key = wrap.getAttribute('data-key');
+      wrap.querySelectorAll('.scenario-chip').forEach((chip) => {
+        chip.classList.toggle('is-active', chip.getAttribute('data-value') === state[key]);
+      });
+    });
+  }
+
+  function presetApply(id) {
+    if (id === 'baseline') {
+      Object.assign(state, { strip: 'promo', hero: 'default', spotlight: 'both', agenda: 'bundle', wallet: 'balance', domicilio: 'ok', cross: 'duo' });
+    } else if (id === 'flash') {
+      Object.assign(state, { strip: 'flash', hero: 'urgency', spotlight: 'cardFocus', agenda: 'bundle', wallet: 'balance', domicilio: 'ok', cross: 'duo' });
+    } else if (id === 'lead') {
+      Object.assign(state, { strip: 'cashback', hero: 'default', spotlight: 'both', agenda: 'noBundle', wallet: 'lead', domicilio: 'ok', cross: 'duo' });
+    } else if (id === 'emptyAgenda') {
+      Object.assign(state, { strip: 'promo', hero: 'default', spotlight: 'both', agenda: 'empty', wallet: 'balance', domicilio: 'ok', cross: 'single' });
+    } else if (id === 'domicilioStress') {
+      Object.assign(state, { strip: 'promo', hero: 'domicilio', spotlight: 'homeWait', agenda: 'bundle', wallet: 'balance', domicilio: 'waitlist', cross: 'partner' });
+    } else if (id === 'expired') {
+      Object.assign(state, { strip: 'expired', hero: 'default', spotlight: 'both', agenda: 'bundle', wallet: 'zero', domicilio: 'unavailable', cross: 'duo' });
+    }
+    applyAll();
+  }
+
+  function buildChips(containerId, key, options) {
+    const wrap = el(containerId);
+    options.forEach(([value, label]) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'scenario-chip';
+      b.setAttribute('data-value', value);
+      b.textContent = label;
+      b.addEventListener('click', () => {
+        state[key] = value;
+        applyAll();
+      });
+      wrap.appendChild(b);
+    });
+  }
+
+  el('scenarioPresets').innerHTML = '';
+  PRESETS.forEach((p) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'scenario-preset';
+    b.innerHTML = `<span>${p.label}</span><small>${p.desc}</small>`;
+    b.addEventListener('click', () => presetApply(p.id));
+    el('scenarioPresets').appendChild(b);
+  });
+
+  buildChips('chipsStrip', 'strip', [
+    ['promo', 'Promo app'],
+    ['flash', 'Flash urgência'],
+    ['cupom', 'Cupom LAB'],
+    ['cashback', 'Cashback turbo'],
+    ['none', 'Sem faixa'],
+    ['expired', 'Encerrada'],
+  ]);
+  buildChips('chipsHero', 'hero', [
+    ['default', 'Padrão'],
+    ['urgency', 'Urgência'],
+    ['domicilio', 'Foco domiciliar'],
+  ]);
+  buildChips('chipsSpotlight', 'spotlight', [
+    ['both', 'Ambos'],
+    ['cardFocus', 'Cartão destaque'],
+    ['homeWait', 'Fila domiciliar'],
+    ['homeOff', 'Fora da área'],
+  ]);
+  buildChips('chipsAgenda', 'agenda', [
+    ['bundle', 'Com bundle'],
+    ['noBundle', 'Sem bundle'],
+    ['empty', 'Sem agenda'],
+  ]);
+  buildChips('chipsWallet', 'wallet', [
+    ['balance', 'Com saldo'],
+    ['zero', 'Saldo zero'],
+    ['lead', 'Lead (sem cartão)'],
+  ]);
+  buildChips('chipsDomicilio', 'domicilio', [
+    ['ok', 'Disponível'],
+    ['waitlist', 'Fila'],
+    ['unavailable', 'Fora da área'],
+  ]);
+  buildChips('chipsCross', 'cross', [
+    ['duo', 'Duas ofertas'],
+    ['single', 'Uma oferta'],
+    ['partner', 'Etiquetas parceiro'],
+  ]);
+
+  const panel = el('scenarioPanel');
+  const drawer = el('scenarioDrawer');
+  const toggle = el('scenarioPanelToggle');
+  const closeBtn = el('scenarioPanelClose');
+
+  function openPanel(open) {
+    panel.classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    drawer.setAttribute('aria-hidden', String(!open));
+  }
+
+  toggle.addEventListener('click', () => openPanel(!panel.classList.contains('is-open')));
+  closeBtn.addEventListener('click', () => openPanel(false));
+
+  applyAll();
+  el('scenarioDrawer').setAttribute('aria-hidden', 'true');
+})();
+  </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+---
+description: Regras para o AI ao gerar ou modificar código de UI para produtos Dasa
+globs:
+  - "**/*.tsx"
+  - "**/*.ts"
+  - "**/*.html"
+  - "**/*.css"
+  - "**/*.scss"
+alwaysApply: false
+---
+
+# Design System Dasa — Regras de geração de código UI
+
+Você está gerando código para produtos do **Design System Dasa**. Siga estas regras antes de escrever qualquer markup, estilo ou componente.
+
+## Fonte de verdade
+
+| O quê | Onde buscar |
+|---|---|
+| Tokens (valores de cor, spacing, radius, tipografia) | **Figma via MCP** — consulte as variáveis do arquivo Figma antes de hardcodar qualquer valor |
+| Componentes (estrutura, variantes, props, paths de import) | **Figma via MCP + Code Connect** — verifique se o componente já existe antes de criar |
+| Regras de uso de componentes | `docs/specs/figma-mapping.md` |
+| Decisões de design e acessibilidade | `docs/design-system.md` |
+| Copy (labels, CTAs, mensagens de erro) | `kb.json` (seção `copy`) + `docs/copy-rules.md` |
+| Princípios de UX e interação | `docs/ux-guidelines.md` |
+
+## Regras obrigatórias
+
+### Tokens e valores
+
+- **Nunca hardcode** cores (`#0037FF`), spacing (`60px`), radius ou tamanhos de fonte diretamente — use CSS variables (`var(--primary)`, `var(--size-60)`)
+- Ao escolher um token, prefira **tokens semânticos** (`--primary`, `--error`, `--success`) sobre tokens de paleta (`--dasa-03`, `--red-80`)
+- Se não souber o nome do token: consulte Figma via MCP — as variáveis estão nomeadas
+
+### Componentes
+
+- **Quando receber um link do Figma:** verifique o Code Connect via Figma MCP **ANTES** de gerar qualquer código
+- **Se Code Connect retornar um path de import:** use-o diretamente — nunca crie o componente do zero
+- **Reporte sempre** quais componentes do frame têm Code Connect ativo (com path) e quais não têm, antes de começar a gerar
+- Se Code Connect não estiver disponível para um componente: consulte a tabela de paths em `docs/specs/figma-mapping.md` como fallback
+- Consulte `docs/specs/figma-mapping.md` para regras de uso (quando usar, estados obrigatórios, o que nunca criar ad-hoc) antes de implementar
+
+### Acessibilidade (não negociável)
+
+- Todo elemento interativo: `min-height: 44px`, `min-width: 44px`
+- Imagens: `alt` descritivo obrigatório (não vazio, não "imagem")
+- Inputs: label visível, nunca apenas placeholder
+- Contraste: mínimo 4.5:1 para texto normal, 3:1 para texto grande
+
+### Copy inline
+
+Qualquer texto de interface deve seguir `docs/copy-rules.md`:
+- Capitalização: apenas primeira palavra em maiúscula
+- CTAs: infinitivo + complemento, 2–3 palavras, sem ponto final
+- Proibido: "Ver mais", "Continuar", "Próximo", "Avançar", "usuário" (use "paciente" ou o termo correto do contexto do produto)
+
+### Mobile-first
+
+- Comece pelo breakpoint 375px
+- CTA Primary: sticky na base da tela, não inline
+- Formulários: labels visíveis, validação contextual (ver `docs/design-system.md`)
+
+## Checklist antes de entregar código
+
+Antes de finalizar qualquer geração, confirme:
+
+- [ ] Nenhum valor hardcoded de cor, spacing ou radius
+- [ ] Componentes verificados no Figma antes de criar novos
+- [ ] Todos os interativos com `min-height: 44px`
+- [ ] Copy revisado contra `copy-rules.md`
+- [ ] Labels de input visíveis e descritivos
+- [ ] Estado de loading implementado para ações assíncronas
+
+---
+
+## Regras específicas para `docs/playground/`
+
+Quando o output for um arquivo `.html` em `docs/playground/`, as seguintes regras se aplicam **sem exceção**:
+
+1. **`playground-state-panel` é obrigatório** — todo HTML em `docs/playground/` deve ter o painel flutuante de estados injetado. Nunca entregue um protótipo sem ele.
+
+2. **`playground-sync-tokens` é obrigatório após a criação** — ao final de todo primeiro render (Modo A), acione automaticamente `playground-sync-tokens`. O bloco `:root` com `--primary: #0037FF` hardcoded nunca é o estado final aceitável. Os tokens devem sempre refletir os valores reais do DS Dasa via Figma MCP.
+
+3. **Ordem obrigatória para novos protótipos:**
+   ```
+   gera HTML base → playground-state-panel (Modo A) → playground-sync-tokens → quality-gate → kb-commit
+   ```
+
+4. **Atualizações de estado (Modo B):** não exigem novo sync de tokens. Apenas edits cirúrgicos em `templates` e no drawer do painel.
+
+## Regra do Screen Contract
+
+Antes de gerar qualquer código de UI a partir de um frame Figma, screenshot ou brief:
+
+1. **O screen contract é obrigatório** — acione `screen-contract` para mapear regiões, vincular componentes e listar tokens antes de escrever código.
+2. **Aguarde confirmação humana** — o contrato deve ser apresentado ao usuário e confirmado antes de prosseguir para a geração.
+3. **O contrato é a fonte de verdade** — use apenas os componentes em `components[]` e os tokens em `tokens_used` do contrato. Qualquer desvio deve ser justificado e registrado.
+4. **Incertezas não resolvem sozinhas** — tudo em `uncertainties` do contrato deve ser explicitamente resolvido antes de implementar a região afetada.
+
+> Esta regra é aplicada automaticamente pelo Step 5 do `implement-design`. Para geração fora do flow `implement-design`, acione `screen-contract` diretamente antes de qualquer código.
+
+---
+
+## Skills para usar em cada situação
+
+Este checklist é aplicado automaticamente pelas skills do repositório. Use-as em vez de aplicar as regras manualmente:
+
+| Situação | Skill a usar | Como acionar |
+|---|---|---|
+| Montar contrato estrutural antes de gerar código | `screen-contract` | "gere o screen contract para esse frame" |
+| Implementar frame do Figma | `implement-design` | "implemente esse frame [link]" |
+| Gerar protótipo HTML interativo | `playground-state-panel` | "gere um playground para X" |
+| Sincronizar tokens do DS no protótipo | `playground-sync-tokens` | automático após Modo A — ou "sincronize os tokens" |
+| Validar código gerado | `quality-gate` | "use a quality-gate skill para revisar esse código" |
+| Aplicar correções cirúrgicas pós-quality-gate | `quality-gate` Repair Mode | automático quando score ≠ APROVADO |
+| Revisar textos de interface | `copy-review` | "revise esse copy" |
+| Publicar mudanças no KB | `kb-commit` | "publica as mudanças do KB" |
+
+Pipeline padrão (produção): `implement-design` → `screen-contract` → `implement-design` → `quality-gate` → (se necessário) `copy-review`.
+
+Pipeline padrão (playground): `playground-state-panel` → `playground-sync-tokens` → `quality-gate` → `kb-commit`.
+
+> As regras acima desta seção são a fonte de verdade que as skills usam. Não é necessário replicá-las no prompt — as skills já as aplicam.

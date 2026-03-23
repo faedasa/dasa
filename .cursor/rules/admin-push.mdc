@@ -1,0 +1,12 @@
+---
+description: Push direto ao master para admin do repositório
+globs: ["**/dasa-design-kb/**", "**/dasa-figma-plugin/**"]
+alwaysApply: false
+---
+
+Quando o usuário pedir para publicar, subir ou fazer push de mudanças no `dasa-design-kb`:
+
+- O usuário é admin do repositório — não criar PR, não criar branch, não usar `gh pr create`
+- Fazer push direto para `master`
+- Fluxo: git add → git commit → git push origin master
+- Ainda seguir a skill `kb-commit` para validação e atualização do CHANGELOG, mas omitir os passos de branch e abertura de PR

@@ -1,0 +1,23 @@
+# Dependencies (qualquer pasta no repo)
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Build / dist
+dist/
+build/
+
+# Playground — artefatos locais (não fazem parte do KB versionado)
+# npm, capturas, scripts auxiliares de dev
+docs/playground/node_modules/
+docs/playground/playground-screenshots/
+**/playground-screenshots/
+docs/playground/package.json
+docs/playground/package-lock.json
+docs/playground/_screenshot-check.mjs

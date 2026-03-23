@@ -1,0 +1,72 @@
+---
+description: Auto-load Dasa Design KB context when working in this repository
+globs:
+  - "**/*.md"
+  - "docs/**"
+alwaysApply: true
+---
+
+# Dasa Design KB — Contexto Automático
+
+Você está trabalhando no repositório `dasa-design-kb`. Este repositório contém:
+
+- `docs/copy-rules.md` — tom de voz, terminologia e regras de copy
+- `docs/ux-guidelines.md` — princípios de design e acessibilidade
+- `docs/design-system.md` — tokens, cores, tipografia e componentes
+- `docs/specs/` — checklists técnicos e specs de implementação
+- `tokens/alm-tokens.json` — export oficial dos tokens do Figma (Tokens Studio)
+
+> **`kb.json` não vive neste repo.** A fonte de verdade das regras de auditoria, checklist e copy estruturado do plugin Figma está em [`dasa-figma-plugin`](https://github.com/design-dasa/dasa-figma-plugin). Para editar regras do plugin, abra um PR naquele repositório.
+
+## Regras ao editar
+
+- PRs obrigatórios — sem push direto em `main`
+- Para mudanças em `docs/`: não é necessário incrementar versão
+- Para mudanças em `tokens/alm-tokens.json`: use commit `chore(tokens): sync`
+
+## CHANGELOG — obrigatório em toda mudança
+
+Toda alteração neste repositório (adição, edição ou remoção de qualquer arquivo) **deve** registrar uma entrada em `CHANGELOG.md` na seção `[Unreleased]`, antes do commit.
+
+- Use a categoria correta: `Added`, `Changed`, `Fixed` ou `Removed`
+- Descreva o arquivo modificado e o motivo em uma linha
+- Não pule esta etapa — o histórico versionado é parte da entrega
+
+## Skills disponíveis
+
+Oito skills estão disponíveis neste repositório. Cada uma tem um escopo preciso — acione a skill certa para cada intenção.
+
+| Skill | Fase | Quando acionar |
+|---|---|---|
+| `onboarding-101` | Onboarding | "como funciona o KB", "101", primeiro acesso ao repositório |
+| `nav360-brainstorm` | Ideação | "brainstorm para o módulo X", explorar variações de UX/UI para o Nav360 |
+| `implement-design` | Implementação | "implemente esse frame", ao receber link Figma ou seleção ativa no Figma Desktop |
+| `playground-state-panel` | Playground | "gere um protótipo", "crie um playground para X", "adicione o estado Y ao módulo Z" |
+| `playground-sync-tokens` | Playground | automático após `playground-state-panel` Modo A — ou "sincronize os tokens do DS no playground" |
+| `quality-gate` | Validação | "valide o código", "quality check", "está conforme o DS?", após `implement-design` ou `playground-sync-tokens` |
+| `copy-review` | Validação | "revise esse copy", "cheque essa frase", "esse texto está correto?" |
+| `kb-commit` | Persistência | "publica as mudanças", "commit e PR do KB", ao final de qualquer sessão de edição |
+
+### Pipelines de orquestração
+
+**Produção (Figma → código):**
+```
+implement-design  →  quality-gate  →  (copy-review se necessário)  →  kb-commit
+```
+
+**Playground (protótipo interativo):**
+```
+playground-state-panel (Modo A)  →  playground-sync-tokens  →  quality-gate  →  kb-commit
+```
+
+**Atualização iterativa de protótipo (Modo B — só estados):**
+```
+playground-state-panel (Modo B)  →  kb-commit
+```
+
+- `implement-design` **sempre chama** `quality-gate` ao final
+- `playground-state-panel` Modo A **sempre chama** `playground-sync-tokens` ao final
+- `quality-gate` **chama** `copy-review` quando o copy inline exige revisão profunda
+- `kb-commit` é independente — acionada após edições em `docs/` ou `tokens/`
+
+Registro completo com mapa de triggers e troubleshooting em [`SKILLS.md`](../SKILLS.md).

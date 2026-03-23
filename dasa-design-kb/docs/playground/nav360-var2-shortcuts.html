@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nav 360 — Variação 2 · Atalhos Contextuais · Playground Dasa</title>
+  <style>
+    /* ─── Design System Dasa — sincronizado via Figma MCP ──── */
+    :root {
+      --primary:        #0037FF;
+      --primary-hover:  #002FDB;
+      --success:        #1F6634;
+      --warning:        #976B1A;
+      --error:          #A72534;
+      --info:           #0D4ECE;
+      --shadow-xs:      0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+      --shadow-lg:      0 8px 32px rgba(0,0,0,.14), 0 2px 8px rgba(0,0,0,.08);
+      --size-60:        60px;
+
+      /* ─── Variáveis locais do protótipo ────────────────────── */
+      --primary-dark:   #001561;
+      --primary-mid:    #002FDB;
+      --primary-light:  #DBE3FF;
+      --primary-xlight: #F0F3FF;
+
+      --secondary:       #005F8F;
+      --secondary-light: #EBF8FF;
+
+      --success-light: #E8F5EC;
+      --warning-light: #FEF9EE;
+      --error-light:   #FEF1F2;
+      --info-light:    #F1F5FE;
+
+      --gray-10:  #1F1F1F;
+      --gray-50:  #4C4C4C;
+      --gray-80:  #737373;
+      --gray-110: #A1A1A1;
+      --gray-130: #C2C2C2;
+      --gray-150: #E6E6E6;
+      --gray-160: #F5F5F5;
+      --white:    #FFFFFF;
+
+      --radius-card:   var(--size-60);
+      --radius-btn:    999px;
+      --radius-btn-sm: 12px;
+      --radius-input:  12px;
+
+      /* --shadow-xs e --shadow-lg são os tokens canônicos do DS;
+         --shadow-01/04 são aliases locais para retrocompatibilidade */
+      --shadow-01: var(--shadow-xs);
+      --shadow-04: var(--shadow-lg);
+
+      --duration-fast:   150ms;
+      --duration-normal: 300ms;
+
+      --sidebar-w: 240px;
+      --topnav-h:  64px;
+    }
+
+    /* ─── Reset & base ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: var(--gray-160);
+      color: var(--gray-10);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── Variação badge ─────────────────────────────────────── */
+    .var-badge {
+      position: fixed;
+      top: 72px;
+      left: 16px;
+      background: #00796B;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      padding: 5px 14px;
+      border-radius: 99px;
+      z-index: 90;
+      box-shadow: 0 2px 8px rgba(0,121,107,.3);
+    }
+
+    /* ─── Global Nav (pill clusters) ────────────────────────── */
+    .global-nav { position: fixed; top: 0; left: 0; right: 0; height: var(--topnav-h); background: var(--gray-160); display: flex; align-items: center; padding: 0 20px; gap: 12px; z-index: 100; }
+    .global-nav__logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; margin-right: 4px; }
+    .logo-mark { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .logo-mark svg { width: 18px; height: 18px; }
+    .logo-name { font-size: 15px; font-weight: 700; color: var(--primary-dark); letter-spacing: -.3px; }
+    .logo-name span { color: var(--primary); }
+    .global-nav__primary { display: flex; align-items: center; background: var(--white); border-radius: 999px; box-shadow: var(--shadow-01); padding: 4px; gap: 2px; height: 44px; }
+    .gnav-item { display: flex; align-items: center; gap: 6px; padding: 0 14px; height: 36px; border: none; background: transparent; border-radius: 999px; font-size: 13px; font-weight: 500; color: var(--gray-50); cursor: pointer; white-space: nowrap; transition: background var(--duration-fast), color var(--duration-fast); }
+    .gnav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .gnav-item:hover { background: var(--gray-160); color: var(--gray-10); }
+    .gnav-item.is-active { background: var(--primary-xlight); color: var(--primary); font-weight: 600; }
+    .gnav-item:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 999px; }
+    .gnav-sep { width: 1px; height: 24px; background: var(--gray-150); flex-shrink: 0; margin: 0 4px; }
+    .gnav-cta { display: flex; align-items: center; gap: 6px; padding: 0 16px; height: 36px; border: none; background: var(--primary); color: var(--white); border-radius: 999px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: opacity var(--duration-fast); }
+    .gnav-cta:hover { opacity: .88; }
+    .gnav-cta svg { width: 15px; height: 15px; }
+    .global-nav__utilities { display: flex; align-items: center; background: var(--white); border-radius: 999px; box-shadow: var(--shadow-01); padding: 4px 6px; gap: 2px; height: 44px; margin-left: auto; }
+    .gnav-icon { width: 36px; height: 36px; border: none; background: transparent; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gray-80); cursor: pointer; position: relative; transition: background var(--duration-fast), color var(--duration-fast); flex-shrink: 0; }
+    .gnav-icon:hover { background: var(--gray-160); color: var(--gray-10); }
+    .gnav-icon svg { width: 20px; height: 20px; }
+    .gnav-badge { position: absolute; top: 3px; right: 3px; min-width: 16px; height: 16px; background: var(--error); color: var(--white); font-size: 10px; font-weight: 700; border-radius: 99px; border: 2px solid var(--white); display: flex; align-items: center; justify-content: center; padding: 0 3px; line-height: 1; pointer-events: none; }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: var(--white); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .gnav-account { display: flex; align-items: center; gap: 6px; border: none; background: transparent; cursor: pointer; padding: 2px 8px 2px 4px; border-radius: 999px; height: 36px; transition: background var(--duration-fast); }
+    .gnav-account:hover { background: var(--gray-160); }
+    .gnav-chevron { color: var(--gray-80); display: flex; align-items: center; }
+    .gnav-chevron svg { width: 14px; height: 14px; }
+
+    /* ─── Shell ──────────────────────────────────────────────── */
+    .shell { display: flex; margin-top: var(--topnav-h); min-height: calc(100vh - var(--topnav-h)); }
+
+    /* ─── Menu Conta ─────────────────────────────────────────── */
+    .account-menu { position: relative; }
+    .account-menu > summary { list-style: none; cursor: pointer; }
+    .account-menu > summary::-webkit-details-marker { display: none; }
+    .account-menu[open] > .gnav-account { background: var(--gray-160); }
+    .account-menu__dropdown { position: absolute; top: calc(100% + 4px); right: 0; background: var(--white); border: 1px solid var(--gray-150); border-radius: 14px; box-shadow: var(--shadow-04); min-width: 200px; padding: 8px 0; z-index: 200; }
+    .account-menu__item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; font-size: 14px; font-weight: 500; color: var(--gray-50); border: none; background: transparent; width: 100%; cursor: pointer; text-align: left; min-height: 44px; transition: background var(--duration-fast), color var(--duration-fast); }
+    .account-menu__item svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .account-menu__item:hover { background: var(--gray-160); color: var(--gray-10); }
+    .account-menu__item.is-danger { color: var(--error); }
+    .account-menu__item.is-danger:hover { background: var(--error-light); }
+    .account-menu__sep { height: 1px; background: var(--gray-150); margin: 6px 0; }
+
+    /* ─── Main ───────────────────────────────────────────────── */
+    .main { flex: 1; padding: 32px; max-width: 1440px; }
+
+    /* ─── Variação 2: Shortcuts ──────────────────────────────── */
+    .shortcuts-section { margin-bottom: 24px; }
+    .shortcuts-label {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .8px; text-transform: uppercase;
+      color: var(--gray-110);
+      margin-bottom: 8px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .shortcuts-label::after {
+      content: '';
+      flex: 1; height: 1px;
+      background: var(--gray-150);
+    }
+    .shortcuts-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .shortcut-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px;
+      background: var(--white);
+      border: 1px solid var(--gray-150);
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: var(--shadow-xs);
+      transition:
+        background var(--duration-fast),
+        border-color var(--duration-fast),
+        box-shadow var(--duration-fast),
+        transform var(--duration-fast);
+      min-height: 44px;
+      flex: 1; min-width: 160px; max-width: 260px;
+      text-align: left;
+    }
+    .shortcut-item:hover {
+      background: var(--primary-xlight);
+      border-color: var(--primary-light);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-1px);
+    }
+    .shortcut-item:active { transform: none; }
+
+    .shortcut-item__icon {
+      width: 32px; height: 32px;
+      background: var(--gray-160);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gray-80);
+      flex-shrink: 0;
+      transition: background var(--duration-fast), color var(--duration-fast);
+    }
+    .shortcut-item:hover .shortcut-item__icon { background: var(--primary-light); color: var(--primary); }
+    .shortcut-item__icon svg { width: 16px; height: 16px; }
+    .shortcut-item__label {
+      font-size: 13px; font-weight: 500;
+      color: var(--gray-50);
+      line-height: 1.3;
+      transition: color var(--duration-fast);
+      flex: 1;
+    }
+    .shortcut-item:hover .shortcut-item__label { color: var(--primary-dark); }
+
+    /* Shortcut contextual */
+    .shortcut-item.is-contextual {
+      background: var(--primary-xlight);
+      border-color: var(--primary-light);
+      border-width: 1.5px;
+    }
+    .shortcut-item.is-contextual .shortcut-item__icon { background: var(--primary-light); color: var(--primary); }
+    .shortcut-item.is-contextual .shortcut-item__label { color: var(--primary-dark); font-weight: 600; }
+    .shortcut-item.is-contextual:hover { background: var(--primary-light); }
+
+    /* Shortcut urgente */
+    .shortcut-item.is-urgent {
+      background: var(--warning-light);
+      border-color: rgba(151,107,26,.25);
+      border-width: 1.5px;
+    }
+    .shortcut-item.is-urgent .shortcut-item__icon { background: rgba(151,107,26,.12); color: var(--warning); }
+    .shortcut-item.is-urgent .shortcut-item__label { color: var(--warning); font-weight: 600; }
+    .shortcut-item.is-urgent:hover { background: rgba(151,107,26,.1); border-color: var(--warning); }
+
+    .shortcut-badge {
+      margin-left: auto;
+      background: var(--primary); color: #fff;
+      font-size: 10px; font-weight: 700;
+      padding: 2px 7px; border-radius: 99px;
+      flex-shrink: 0;
+    }
+    .shortcut-badge.is-warning { background: var(--warning); }
+
+    /* ─── Content grid ───────────────────────────────────────── */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 20px;
+      align-items: start;
+    }
+    .col-main { display: flex; flex-direction: column; gap: 20px; }
+    .col-side  { display: flex; flex-direction: column; gap: 20px; }
+
+    /* ─── Card base ──────────────────────────────────────────── */
+    .card {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: var(--shadow-xs);
+    }
+    .card__header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .card__title {
+      font-size: 16px; font-weight: 700; color: var(--gray-10);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card__title svg { width: 18px; height: 18px; }
+    .card__link {
+      font-size: 13px; color: var(--primary); font-weight: 600;
+      cursor: pointer; border: none; background: none; padding: 0;
+      min-height: 44px; display: flex; align-items: center;
+    }
+    .card__link:hover { text-decoration: underline; }
+
+    /* ─── Próxima data card ──────────────────────────────────── */
+    .next-date-card {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-mid) 60%, var(--primary) 100%);
+      border-radius: 24px;
+      padding: 28px;
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+    .next-date-card::before {
+      content: '';
+      position: absolute; top: -40px; right: -40px;
+      width: 200px; height: 200px;
+      background: rgba(255,255,255,.05);
+      border-radius: 50%;
+    }
+    .next-date-card::after {
+      content: '';
+      position: absolute; bottom: -60px; right: 60px;
+      width: 160px; height: 160px;
+      background: rgba(255,255,255,.04);
+      border-radius: 50%;
+    }
+    .next-date-card__label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      opacity: .7; margin-bottom: 16px;
+    }
+    .next-date-card__body {
+      display: flex; gap: 20px;
+      align-items: flex-start;
+      position: relative;
+    }
+    .date-badge {
+      background: rgba(255,255,255,.15);
+      border-radius: 16px;
+      padding: 12px 16px;
+      text-align: center;
+      flex-shrink: 0;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,.2);
+    }
+    .date-badge__day   { font-size: 32px; font-weight: 700; line-height: 1; }
+    .date-badge__month { font-size: 13px; opacity: .8; margin-top: 2px; font-weight: 500; }
+    .date-info { flex: 1; }
+    .date-info__name { font-size: 20px; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
+    .date-info__meta { display: flex; flex-direction: column; gap: 4px; }
+    .date-info__meta-item {
+      font-size: 13px; opacity: .85;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .date-info__meta-item svg { width: 14px; height: 14px; opacity: .7; }
+    .status-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 99px;
+      font-size: 12px; font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .status-chip.pending  { background: rgba(255,208,0,.2); color: #FFE066; }
+    .status-chip.confirmed { background: rgba(34,200,94,.2); color: #7DFFB8; }
+    .status-chip__dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .next-date-card__actions {
+      display: flex; gap: 12px;
+      margin-top: 24px;
+      position: relative;
+    }
+
+    /* ─── Buttons ────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      height: 44px;
+      border: none; border-radius: var(--radius-btn);
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; padding: 0 24px;
+      transition:
+        opacity var(--duration-fast),
+        transform var(--duration-fast),
+        box-shadow var(--duration-fast);
+    }
+    .btn:hover { opacity: .92; transform: translateY(-1px); }
+    .btn:active { transform: none; }
+    .btn-primary { background: var(--white); color: var(--primary-dark); box-shadow: 0 2px 12px rgba(0,0,0,.2); }
+    .btn-primary:hover { box-shadow: 0 4px 20px rgba(0,0,0,.25); }
+    .btn-ghost-white { background: rgba(255,255,255,.15); color: var(--white); border: 1.5px solid rgba(255,255,255,.3); backdrop-filter: blur(4px); }
+    .btn-ghost-white:hover { background: rgba(255,255,255,.22); }
+    .btn-outline { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+    .btn-outline:hover { background: var(--primary-xlight); }
+
+    /* ─── Inline pending (dentro do card de data) ────────────── */
+    .inline-pending {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: rgba(255,246,230,.9);
+      border: 1px solid rgba(151,107,26,.2);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 14px;
+    }
+    .inline-pending__icon {
+      width: 28px; height: 28px; flex-shrink: 0;
+      background: rgba(151,107,26,.15); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--warning);
+    }
+    .inline-pending__icon svg { width: 13px; height: 13px; }
+    .inline-pending__body { flex: 1; }
+    .inline-pending__name   { font-size: 12px; font-weight: 700; color: var(--gray-10); }
+    .inline-pending__detail { font-size: 11px; color: var(--gray-80); margin-top: 2px; }
+    .inline-pending__cta {
+      height: 28px; padding: 0 12px;
+      border: 1.5px solid rgba(151,107,26,.3);
+      background: transparent; color: var(--warning);
+      border-radius: 99px;
+      font-size: 11px; font-weight: 700;
+      cursor: pointer; flex-shrink: 0; align-self: center;
+    }
+
+    /* ─── Preparo section (dentro do card urgente) ───────────── */
+    .preparo-section {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,.2);
+    }
+    .preparo-section__title {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .8px; text-transform: uppercase;
+      opacity: .7; margin-bottom: 10px;
+    }
+    .preparo-list { display: flex; flex-direction: column; gap: 7px; }
+    .preparo-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 13px; opacity: .88; line-height: 1.4;
+    }
+    .preparo-item__dot {
+      width: 6px; height: 6px;
+      border-radius: 50%; background: rgba(255,255,255,.55);
+      margin-top: 5px; flex-shrink: 0;
+    }
+
+    /* ─── Result list ────────────────────────────────────────── */
+    .result-list { display: flex; flex-direction: column; gap: 1px; }
+    .result-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--gray-150);
+    }
+    .result-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .result-item:first-child { padding-top: 0; }
+    .result-icon {
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .result-icon svg { width: 18px; height: 18px; }
+    .result-icon.blue  { background: var(--primary-xlight); color: var(--primary); }
+    .result-icon.green { background: var(--success-light);  color: var(--success); }
+    .result-icon.info  { background: var(--info-light);     color: var(--info); }
+    .result-info { flex: 1; min-width: 0; }
+    .result-info__name {
+      font-size: 14px; font-weight: 600; color: var(--gray-10);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .result-info__meta { font-size: 12px; color: var(--gray-80); margin-top: 2px; }
+    .result-new-badge {
+      background: var(--primary-xlight); color: var(--primary);
+      font-size: 11px; font-weight: 700;
+      padding: 3px 10px; border-radius: 99px; flex-shrink: 0;
+    }
+    .result-action {
+      flex-shrink: 0; font-size: 13px; font-weight: 600;
+      color: var(--primary); cursor: pointer;
+      border: none; background: none; padding: 0;
+      min-height: 44px; display: flex; align-items: center;
+    }
+    .result-action:hover { text-decoration: underline; }
+
+    /* ─── Pending list ───────────────────────────────────────── */
+    .pending-list { display: flex; flex-direction: column; gap: 12px; }
+    .pending-item {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--warning-light);
+      border: 1px solid rgba(151,107,26,.15);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+    .pending-icon {
+      width: 36px; height: 36px;
+      background: rgba(151,107,26,.15);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--warning); flex-shrink: 0;
+    }
+    .pending-icon svg { width: 16px; height: 16px; }
+    .pending-info { flex: 1; }
+    .pending-info__name   { font-size: 13px; font-weight: 600; color: var(--gray-10); }
+    .pending-info__detail { font-size: 12px; color: var(--gray-80); margin-top: 2px; }
+    .pending-action {
+      flex-shrink: 0; height: 36px;
+      font-size: 13px; font-weight: 600; color: var(--warning);
+      border: 1.5px solid rgba(151,107,26,.3);
+      border-radius: var(--radius-btn);
+      background: transparent; cursor: pointer; padding: 0 14px;
+      transition: background var(--duration-fast);
+    }
+    .pending-action:hover { background: rgba(151,107,26,.1); }
+    .pending-item.critical { background: var(--error-light); border-color: rgba(167,37,52,.2); }
+    .pending-item.critical .pending-icon  { background: rgba(167,37,52,.15); color: var(--error); }
+    .pending-item.critical .pending-action { color: var(--error); border-color: rgba(167,37,52,.3); }
+
+    /* ─── History / Saúde do paciente ────────────────────────── */
+    .history-list { display: flex; flex-direction: column; gap: 10px; }
+    .history-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--gray-150);
+    }
+    .history-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .history-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+      margin-top: 5px; flex-shrink: 0;
+    }
+    .history-dot.ongoing { background: var(--warning); }
+    .history-info__name   { font-size: 13px; font-weight: 600; color: var(--gray-10); }
+    .history-info__detail { font-size: 12px; color: var(--gray-80); margin-top: 2px; }
+
+    /* ─── IA Card ────────────────────────────────────────────── */
+    .ia-card {
+      background: linear-gradient(135deg, var(--secondary-light) 0%, var(--primary-xlight) 100%);
+      border: 1px solid var(--primary-light);
+      border-radius: 20px;
+      padding: 20px;
+    }
+    .ia-card__header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .ia-chip {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .8px; text-transform: uppercase;
+      color: var(--primary);
+      background: var(--primary-xlight);
+      border: 1px solid var(--primary-light);
+      border-radius: 99px;
+      padding: 2px 10px;
+    }
+    .ia-card__text {
+      font-size: 13px; color: var(--gray-10);
+      line-height: 1.5; margin-bottom: 14px;
+    }
+    .ia-card__text strong { color: var(--primary-dark); }
+    .ia-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ia-action-btn {
+      height: 36px;
+      border: 1.5px solid var(--primary-light);
+      background: var(--white); color: var(--primary-dark);
+      border-radius: var(--radius-btn);
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; padding: 0 16px;
+      transition: background var(--duration-fast), border-color var(--duration-fast);
+    }
+    .ia-action-btn:hover { background: var(--primary-xlight); border-color: var(--primary); }
+    .gap-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .8px; text-transform: uppercase;
+      color: #FFD966;
+      background: rgba(255,217,102,.15);
+      border: 1px solid rgba(255,217,102,.3);
+      border-radius: 99px; padding: 3px 10px;
+    }
+
+    /* ─── Família ────────────────────────────────────────────── */
+    .familia-section-label {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: var(--gray-110); margin-bottom: 12px;
+    }
+    .familia-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .familia-card {
+      background: var(--white);
+      border: 1px solid var(--gray-150);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex; flex-direction: column; gap: 10px;
+      box-shadow: var(--shadow-xs);
+      transition: box-shadow var(--duration-fast);
+    }
+    .familia-card:hover { box-shadow: var(--shadow-lg); }
+    .familia-card__header { display: flex; align-items: center; gap: 8px; }
+    .familia-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+      color: #fff; flex-shrink: 0;
+    }
+    .familia-avatar.teal   { background: #0088CC; }
+    .familia-avatar.green  { background: #1F6634; }
+    .familia-avatar.orange { background: #B95804; }
+    .familia-card__name   { font-size: 13px; font-weight: 700; color: var(--gray-10); }
+    .familia-card__rel    { font-size: 11px; color: var(--gray-80); }
+    .familia-card__update { font-size: 12px; color: var(--gray-50); line-height: 1.5; }
+    .familia-card__detail {
+      border-left: 3px solid var(--primary-light);
+      padding-left: 8px;
+      font-size: 11px; color: var(--gray-80); line-height: 1.5;
+    }
+    .familia-card__detail.warning { border-color: var(--warning-light); }
+    .familia-card__detail.success { border-color: var(--success-light); }
+    .familia-card__actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .familia-btn {
+      height: 32px; padding: 0 12px;
+      border-radius: var(--radius-btn);
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; border: none;
+      transition: opacity var(--duration-fast);
+    }
+    .familia-btn:hover { opacity: .85; }
+    .familia-btn.primary { background: var(--primary); color: #fff; }
+    .familia-btn.ghost   { background: var(--gray-160); color: var(--gray-50); }
+
+    /* ─── Ofertas ────────────────────────────────────────────── */
+    .oferta-list { display: flex; flex-direction: column; gap: 10px; }
+    .oferta-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px;
+      background: var(--gray-160);
+      border-radius: 14px;
+      border: 1px solid var(--gray-150);
+      transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+    }
+    .oferta-item:hover { border-color: var(--primary-light); box-shadow: var(--shadow-xs); }
+    .oferta-item__icon {
+      width: 36px; height: 36px;
+      background: var(--primary-xlight); color: var(--primary);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .oferta-item__icon svg { width: 16px; height: 16px; }
+    .oferta-item__body { flex: 1; min-width: 0; }
+    .oferta-item__name { font-size: 13px; font-weight: 700; color: var(--gray-10); }
+    .oferta-item__desc { font-size: 12px; color: var(--gray-80); margin-top: 2px; line-height: 1.4; }
+    .oferta-economia {
+      display: inline-flex; align-items: center;
+      font-size: 11px; font-weight: 700;
+      color: var(--success); background: var(--success-light);
+      border-radius: 99px; padding: 2px 8px; margin-top: 6px;
+    }
+    .oferta-item__cta {
+      height: 32px; padding: 0 14px;
+      border-radius: var(--radius-btn);
+      font-size: 12px; font-weight: 600;
+      color: var(--primary);
+      border: 1.5px solid var(--primary-light);
+      background: var(--white);
+      cursor: pointer; flex-shrink: 0; white-space: nowrap;
+    }
+    .oferta-item__cta:hover { background: var(--primary-xlight); border-color: var(--primary); }
+
+    /* ─── Cupons ─────────────────────────────────────────────── */
+    .cupom-list { display: flex; flex-direction: column; gap: 10px; }
+    .cupom-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1.5px dashed var(--gray-130);
+      background: var(--white);
+    }
+    .cupom-tag {
+      font-size: 11px; font-weight: 800;
+      letter-spacing: .6px; text-transform: uppercase;
+      color: var(--primary-dark);
+      background: var(--primary-xlight);
+      border-radius: 6px; padding: 4px 8px; flex-shrink: 0;
+    }
+    .cupom-info { flex: 1; min-width: 0; }
+    .cupom-info__desc {
+      font-size: 12px; font-weight: 600; color: var(--gray-10);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cupom-info__valid { font-size: 11px; color: var(--gray-110); margin-top: 1px; }
+    .cupom-usar {
+      height: 30px; padding: 0 12px;
+      border-radius: 99px;
+      font-size: 12px; font-weight: 600;
+      color: var(--primary);
+      border: 1.5px solid var(--primary-light);
+      background: transparent; cursor: pointer; flex-shrink: 0;
+    }
+    .cupom-usar:hover { background: var(--primary-xlight); }
+
+    /* ─── Feedback states ────────────────────────────────────── */
+    @keyframes shimmer {
+      0%   { background-position: -600px 0; }
+      100% { background-position:  600px 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, var(--gray-150) 25%, var(--gray-160) 50%, var(--gray-150) 75%);
+      background-size: 600px 100%;
+      animation: shimmer 1.4s infinite linear;
+      border-radius: 6px;
+    }
+    .skeleton-line { height: 14px; margin-bottom: 8px; }
+    .skeleton-line.sm { width: 40%; }
+    .skeleton-line.lg { width: 90%; }
+
+    .empty-state {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 32px 16px; text-align: center; gap: 10px;
+    }
+    .empty-state__icon {
+      width: 48px; height: 48px;
+      background: var(--gray-160); border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gray-110); margin-bottom: 4px;
+    }
+    .empty-state__icon svg { width: 22px; height: 22px; }
+    .empty-state__title { font-size: 14px; font-weight: 600; color: var(--gray-50); }
+    .empty-state__desc  { font-size: 13px; color: var(--gray-110); max-width: 260px; line-height: 1.5; }
+
+    .success-banner {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--success-light);
+      border: 1px solid rgba(31,102,52,.2);
+      border-radius: 14px; padding: 16px 18px;
+    }
+    .success-banner__icon {
+      width: 36px; height: 36px;
+      background: rgba(31,102,52,.15); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--success); flex-shrink: 0;
+    }
+    .success-banner__icon svg { width: 18px; height: 18px; }
+    .success-banner__text { font-size: 14px; font-weight: 600; color: var(--success); }
+    .success-banner__sub  { font-size: 12px; color: var(--gray-80); margin-top: 2px; }
+
+    /* ─── Float state panel ──────────────────────────────────── */
+    .state-panel {
+      position: fixed;
+      z-index: 300;
+      user-select: none;
+    }
+    .state-panel.is-dragging * { pointer-events: none !important; }
+    .state-panel__drawer {
+      position: absolute;
+      right: 0;
+      bottom: calc(100% + 8px);
+      background: #0F0F0F;
+      border-radius: 16px;
+      padding: 16px;
+      width: min(296px, calc(100vw - 24px));
+      max-height: min(480px, calc(100dvh - 80px));
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,.1) transparent;
+      box-shadow: 0 8px 40px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.3);
+      border: 1px solid rgba(255,255,255,.08);
+      visibility: hidden; opacity: 0;
+      transform: translateY(6px) scale(0.98);
+      transform-origin: bottom right;
+      transition:
+        opacity 200ms cubic-bezier(0.16,1,0.3,1),
+        transform 200ms cubic-bezier(0.16,1,0.3,1),
+        visibility 0ms 200ms;
+    }
+    .state-panel__drawer.is-open {
+      visibility: visible; opacity: 1; transform: none;
+      transition:
+        opacity 200ms cubic-bezier(0.16,1,0.3,1),
+        transform 200ms cubic-bezier(0.16,1,0.3,1),
+        visibility 0ms 0ms;
+    }
+    .state-panel__header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+      cursor: grab;
+      padding: 2px 0 6px;
+      margin-top: -2px;
+    }
+    .state-panel.is-dragging .state-panel__header { cursor: grabbing; }
+    .state-panel__label {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      color: rgba(255,255,255,.35);
+      pointer-events: none;
+    }
+    .state-panel__close {
+      width: 22px; height: 22px;
+      background: rgba(255,255,255,.07);
+      border: none; border-radius: 6px;
+      color: rgba(255,255,255,.45);
+      cursor: pointer; font-size: 14px;
+      line-height: 22px; text-align: center;
+      transition: background 120ms;
+      pointer-events: auto;
+    }
+    .state-panel__close:hover { background: rgba(255,255,255,.13); }
+
+    .panel-tabs {
+      display: flex;
+      background: rgba(255,255,255,.06);
+      border-radius: 8px; padding: 3px; gap: 2px;
+      margin-bottom: 14px;
+    }
+    .panel-tab {
+      flex: 1; height: 28px;
+      border: none; background: transparent;
+      border-radius: 6px;
+      font-size: 11px; font-weight: 600;
+      color: rgba(255,255,255,.4);
+      cursor: pointer;
+      transition: background 150ms, color 150ms;
+      letter-spacing: .2px;
+    }
+    .panel-tab.is-active { background: rgba(255,255,255,.12); color: #fff; }
+    .panel-tab:hover:not(.is-active) { color: rgba(255,255,255,.65); }
+
+    .page-list { display: flex; flex-direction: column; gap: 2px; }
+    .page-item {
+      display: flex; align-items: center; gap: 10px;
+      height: 36px; padding: 0 10px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: rgba(255,255,255,.55);
+      font-size: 12px; font-weight: 500;
+      transition: background 120ms, color 120ms;
+    }
+    .page-item:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.85); }
+    .page-item.is-current {
+      background: rgba(0,55,255,.18);
+      color: #fff; font-weight: 600;
+      pointer-events: none;
+    }
+    .page-item__dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.18);
+      flex-shrink: 0;
+      transition: background 120ms, box-shadow 120ms;
+    }
+    .page-item.is-current .page-item__dot {
+      background: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0,55,255,.28);
+    }
+    .page-item__label { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .page-item__arrow { font-size: 11px; opacity: .3; }
+    .page-item.is-current .page-item__arrow { display: none; }
+
+    .panel-states {
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,.1) transparent;
+    }
+    .panel-states::-webkit-scrollbar { width: 3px; }
+    .panel-states::-webkit-scrollbar-track { background: transparent; }
+    .panel-states::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 99px; }
+
+    .panel-content[hidden] { display: none; }
+
+    .state-panel__module { margin-bottom: 12px; }
+    .state-panel__module:last-child { margin-bottom: 0; }
+    .state-panel__module-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    .state-panel__module-label {
+      font-size: 10px; font-weight: 600;
+      color: rgba(255,255,255,.3);
+      letter-spacing: .5px; text-transform: uppercase;
+    }
+    .state-panel__active-badge {
+      font-size: 9px; font-weight: 600;
+      color: rgba(255,255,255,.35);
+      background: rgba(255,255,255,.06);
+      padding: 2px 6px; border-radius: 4px;
+      letter-spacing: .2px; white-space: nowrap;
+    }
+    .state-btns { display: flex; flex-wrap: wrap; gap: 4px; }
+    .state-btn {
+      height: 26px; padding: 0 9px;
+      border-radius: 6px;
+      font-size: 11px; font-weight: 600;
+      border: 1.5px solid rgba(255,255,255,.1);
+      background: transparent;
+      color: rgba(255,255,255,.45);
+      cursor: pointer;
+      transition: all 120ms;
+      white-space: nowrap;
+    }
+    .state-btn:hover { background: rgba(255,255,255,.07); color: rgba(255,255,255,.85); border-color: rgba(255,255,255,.18); }
+    .state-btn.is-active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .state-panel__divider { height: 1px; background: rgba(255,255,255,.06); margin: 10px 0; }
+
+    .state-panel__toggle {
+      min-height: 44px; padding: 0 16px;
+      background: #0F0F0F;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 99px;
+      color: rgba(255,255,255,.65);
+      font-size: 12px; font-weight: 600;
+      cursor: default; touch-action: none;
+      display: flex; align-items: center; gap: 7px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.3);
+      transition: background 120ms, color 120ms;
+      letter-spacing: .3px;
+      white-space: nowrap;
+    }
+    .state-panel__toggle:hover { background: #191919; color: #fff; }
+    .state-panel__toggle svg { width: 13px; height: 13px; opacity: .5; flex-shrink: 0; }
+    @media (max-width: 600px) {
+      .state-panel__toggle { padding: 0 14px; min-width: 44px; justify-content: center; }
+      .state-panel__toggle-label { display: none; }
+      .state-panel__toggle svg { opacity: .8; width: 15px; height: 15px; }
+      .state-panel__drawer { width: min(280px, calc(100vw - 20px)); }
+    }
+
+    /* ─── Banner Contextual (Airbnb logged-in pattern) ───────── */
+    .context-banner { position: sticky; top: var(--topnav-h); z-index: 90; background: var(--primary-xlight); border-bottom: 1px solid var(--primary-light); display: flex; align-items: center; gap: 12px; padding: 0 24px; height: 48px; }
+    .context-banner.is-hidden { display: none; }
+    .context-banner__icon { color: var(--primary); display: flex; align-items: center; flex-shrink: 0; }
+    .context-banner__icon svg { width: 15px; height: 15px; }
+    .context-banner__text { flex: 1; font-size: 13px; color: var(--gray-10); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .context-banner__text strong { font-weight: 700; }
+    .context-banner__actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .context-banner__link { font-size: 13px; font-weight: 600; color: var(--primary); background: none; border: none; cursor: pointer; padding: 4px 10px; border-radius: 8px; min-height: 32px; display: flex; align-items: center; transition: background var(--duration-fast); }
+    .context-banner__link:hover { background: var(--primary-light); }
+    .context-banner__cta { font-size: 13px; font-weight: 600; color: var(--white); background: var(--primary); border: none; cursor: pointer; padding: 0 16px; border-radius: 99px; height: 32px; display: flex; align-items: center; gap: 5px; transition: background var(--duration-fast); }
+    .context-banner__cta:hover { background: var(--primary-mid); }
+    .context-banner__dismiss { width: 28px; height: 28px; border: none; background: transparent; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--gray-80); flex-shrink: 0; transition: background var(--duration-fast), color var(--duration-fast); }
+    .context-banner__dismiss:hover { background: var(--primary-light); color: var(--gray-10); }
+    .context-banner__dismiss svg { width: 14px; height: 14px; }
+  </style>
+</head>
+<body>
+
+<div class="var-badge" aria-hidden="true">Variação 2 — Atalhos contextuais</div>
+
+<!-- ─── Global Nav ───────────────────────────────────────────── -->
+<nav class="global-nav" role="banner">
+  <div class="global-nav__logo">
+    <div class="logo-mark" aria-hidden="true">
+      <svg viewBox="0 0 18 18" fill="none"><path d="M9 2L15 5.5V12.5L9 16L3 12.5V5.5L9 2Z" fill="white" opacity=".9"/><path d="M9 6L12 7.75V11.25L9 13L6 11.25V7.75L9 6Z" fill="white"/></svg>
+    </div>
+    <span class="logo-name">Nav <span>Dasa</span></span>
+  </div>
+  <nav class="global-nav__primary" aria-label="Navegação principal">
+    <button class="gnav-item is-active" aria-current="page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Início
+    </button>
+    <button class="gnav-item">Sua saúde</button>
+    <button class="gnav-item">Exames</button>
+    <button class="gnav-item">Vacinas</button>
+    <span class="gnav-sep" role="separator" aria-hidden="true"></span>
+    <button class="gnav-cta" aria-label="Agendar exame ou consulta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/></svg>
+      Agendar
+    </button>
+  </nav>
+  <nav class="global-nav__utilities" aria-label="Ações de conta e notificações">
+    <details class="account-menu">
+      <summary class="gnav-account" aria-label="Menu da conta de Ana Beatriz Costa">
+        <div class="avatar" aria-hidden="true">AB</div>
+        <span class="gnav-chevron" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </summary>
+      <div class="account-menu__dropdown" role="menu">
+        <button class="account-menu__item" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Meu perfil
+        </button>
+        <button class="account-menu__item" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14"/></svg>
+          Preferências
+        </button>
+        <div class="account-menu__sep" role="separator"></div>
+        <button class="account-menu__item is-danger" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sair
+        </button>
+      </div>
+    </details>
+    <button class="gnav-icon" aria-label="Notificações (2 não lidas)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+      <span class="gnav-badge" aria-hidden="true">2</span>
+    </button>
+    <button class="gnav-icon" aria-label="Carrinho (10 itens)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+      <span class="gnav-badge" aria-hidden="true">10</span>
+    </button>
+  </nav>
+</nav>
+
+<!-- ─── Banner Contextual (Airbnb logged-in pattern) ────────── -->
+<div class="context-banner" id="context-banner" role="status" aria-live="polite">
+  <span class="context-banner__icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+  </span>
+  <span class="context-banner__text">
+    <strong>Hemograma + Glicemia</strong> · Sex, 21 mar · 9h · Delboni Sumaré
+  </span>
+  <div class="context-banner__actions">
+    <button class="context-banner__link">Ver detalhes</button>
+    <button class="context-banner__cta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg>
+      Confirmar presença
+    </button>
+  </div>
+  <button class="context-banner__dismiss" aria-label="Fechar banner de agendamento" onclick="this.closest('.context-banner').classList.add('is-hidden')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>
+
+<!-- ─── Shell ──────────────────────────────────────────────── -->
+<div class="shell">
+
+  <!-- Main -->
+  <main class="main" id="main-content">
+    <!-- VARIAÇÃO 2: Atalhos contextuais dinâmicos -->
+    <section class="shortcuts-section" aria-label="Ações rápidas">
+      <p class="shortcuts-label">Ações rápidas</p>
+      <nav class="shortcuts-row" id="shortcuts-row" aria-label="Atalhos contextuais"></nav>
+    </section>
+
+    <div class="content-grid">
+      <div class="col-main">
+        <section aria-label="Próxima data agendada" id="module-proxima-data"></section>
+        <section id="module-resultados" aria-label="Resultados disponíveis"></section>
+        <section id="module-pendencias" aria-label="Pendências ativas"></section>
+        <section id="module-familia" aria-label="Espaço família"></section>
+      </div>
+      <div class="col-side">
+        <section id="module-ofertas" aria-label="Sugestões e ofertas para você"></section>
+        <section class="card" aria-label="Saúde do paciente — histórico">
+          <div class="card__header">
+            <h2 class="card__title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              Saúde do paciente
+            </h2>
+            <button class="card__link" aria-label="Abrir prontuário completo">Prontuário</button>
+          </div>
+          <div class="history-list" role="list">
+            <div class="history-item" role="listitem">
+              <div class="history-dot ongoing" aria-hidden="true"></div>
+              <div class="history-info">
+                <div class="history-info__name">Hipotireoidismo</div>
+                <div class="history-info__detail">Em acompanhamento · Levotiroxina 50mcg/dia</div>
+              </div>
+            </div>
+            <div class="history-item" role="listitem">
+              <div class="history-dot ongoing" aria-hidden="true"></div>
+              <div class="history-info">
+                <div class="history-info__name">Hipertensão arterial</div>
+                <div class="history-info__detail">Em acompanhamento · Losartana 50mg/dia</div>
+              </div>
+            </div>
+            <div class="history-item" role="listitem">
+              <div class="history-dot" aria-hidden="true"></div>
+              <div class="history-info">
+                <div class="history-info__name">Apendicectomia</div>
+                <div class="history-info__detail">fevereiro de 2019 · Hospital Sírio-Libanês</div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="module-ia" aria-label="Sugestão personalizada"></section>
+        <section id="module-cupons" aria-label="Cupons e parcerias"></section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ─── Float State Panel ────────────────────────────────── -->
+<div class="state-panel" id="statePanel">
+  <div class="state-panel__drawer" id="statePanelDrawer">
+    <div class="state-panel__header">
+      <span class="state-panel__label">Playground Dasa</span>
+      <button class="state-panel__close" onclick="togglePanel()" aria-label="Fechar painel de estados">✕</button>
+    </div>
+
+    <div class="panel-tabs" role="tablist">
+      <button class="panel-tab is-active" role="tab" aria-selected="true"
+              onclick="switchTab('pages')" id="tab-pages-btn">Páginas</button>
+      <button class="panel-tab" role="tab" aria-selected="false"
+              onclick="switchTab('states')" id="tab-states-btn">Estados</button>
+    </div>
+
+    <!-- Tab: Páginas -->
+    <div class="panel-content" id="tab-pages" role="tabpanel" aria-labelledby="tab-pages-btn">
+      <div class="page-list">
+        <a class="page-item" href="nav360-home.html">
+          <span class="page-item__dot"></span>
+          <span class="page-item__label">Home</span>
+          <span class="page-item__arrow">↗</span>
+        </a>
+        <a class="page-item" href="nav360-var1-col-side.html">
+          <span class="page-item__dot"></span>
+          <span class="page-item__label">Var 1 · Col-Side</span>
+          <span class="page-item__arrow">↗</span>
+        </a>
+        <a class="page-item" href="nav360-var2-shortcuts.html">
+          <span class="page-item__dot"></span>
+          <span class="page-item__label">Var 2 · Atalhos</span>
+          <span class="page-item__arrow">↗</span>
+        </a>
+        <a class="page-item" href="nav360-var3-historico.html">
+          <span class="page-item__dot"></span>
+          <span class="page-item__label">Var 3 · Histórico</span>
+          <span class="page-item__arrow">↗</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Tab: Estados -->
+    <div class="panel-content panel-states" id="tab-states" role="tabpanel" aria-labelledby="tab-states-btn" hidden>
+
+      <div class="state-panel__module">
+        <div class="state-panel__module-header">
+          <div class="state-panel__module-label">Próxima data</div>
+          <span class="state-panel__active-badge" id="badge-proxima-data">Aguardando</span>
+        </div>
+        <div class="state-btns" id="btns-proxima-data">
+          <button class="state-btn is-active" onclick="setState('proxima-data','pending',this)">Aguardando</button>
+          <button class="state-btn" onclick="setState('proxima-data','confirmed',this)">Confirmado</button>
+          <button class="state-btn" onclick="setState('proxima-data','urgent',this)">Urgente &lt;48h</button>
+          <button class="state-btn" onclick="setState('proxima-data','with-pending',this)">Com pendência</button>
+          <button class="state-btn" onclick="setState('proxima-data','no-appointment',this)">Sem data</button>
+          <button class="state-btn" onclick="setState('proxima-data','past',this)">Não compareceu</button>
+        </div>
+      </div>
+
+      <div class="state-panel__divider"></div>
+
+      <div class="state-panel__module">
+        <div class="state-panel__module-header">
+          <div class="state-panel__module-label">Resultados</div>
+          <span class="state-panel__active-badge" id="badge-resultados">Com novos</span>
+        </div>
+        <div class="state-btns" id="btns-resultados">
+          <button class="state-btn is-active" onclick="setState('resultados','with-results',this)">Com novos</button>
+          <button class="state-btn" onclick="setState('resultados','loading',this)">Carregando</button>
+          <button class="state-btn" onclick="setState('resultados','empty',this)">Sem resultados</button>
+        </div>
+      </div>
+
+      <div class="state-panel__divider"></div>
+
+      <div class="state-panel__module">
+        <div class="state-panel__module-header">
+          <div class="state-panel__module-label">Pendências</div>
+          <span class="state-panel__active-badge" id="badge-pendencias">Ativas</span>
+        </div>
+        <div class="state-btns" id="btns-pendencias">
+          <button class="state-btn is-active" onclick="setState('pendencias','with-pending',this)">Ativas</button>
+          <button class="state-btn" onclick="setState('pendencias','critical',this)">Crítica vencida</button>
+          <button class="state-btn" onclick="setState('pendencias','resolved',this)">Resolvidas</button>
+        </div>
+      </div>
+
+      <div class="state-panel__divider"></div>
+
+      <div class="state-panel__module">
+        <div class="state-panel__module-header">
+          <div class="state-panel__module-label">Sugestão IA</div>
+          <span class="state-panel__active-badge" id="badge-ia">TSH alto</span>
+        </div>
+        <div class="state-btns" id="btns-ia">
+          <button class="state-btn is-active" onclick="setState('ia','tsh-high',this)">TSH alto</button>
+          <button class="state-btn" onclick="setState('ia','gap-de-cuidado',this)">Gap de cuidado</button>
+          <button class="state-btn" onclick="setState('ia','seasonal',this)">Vacina sazonal</button>
+          <button class="state-btn" onclick="setState('ia','checkup',this)">Check-up anual</button>
+          <button class="state-btn" onclick="setState('ia','empty',this)">Sem sugestões</button>
+        </div>
+      </div>
+
+      <div class="state-panel__divider"></div>
+
+      <div class="state-panel__module">
+        <div class="state-panel__module-header">
+          <div class="state-panel__module-label">Espaço família</div>
+          <span class="state-panel__active-badge" id="badge-familia">Oculto</span>
+        </div>
+        <div class="state-btns" id="btns-familia">
+          <button class="state-btn is-active" onclick="setState('familia','hidden',this)">Oculto</button>
+          <button class="state-btn" onclick="setState('familia','with-dependents',this)">Com dependentes</button>
+          <button class="state-btn" onclick="setState('familia','empty',this)">Sem dependentes</button>
+        </div>
+      </div>
+
+      <div class="state-panel__divider"></div>
+
+      <div class="state-panel__module">
+        <div class="state-panel__module-header">
+          <div class="state-panel__module-label">Ofertas</div>
+          <span class="state-panel__active-badge" id="badge-ofertas">Contextual</span>
+        </div>
+        <div class="state-btns" id="btns-ofertas">
+          <button class="state-btn is-active" onclick="setState('ofertas','contextual',this)">Contextual</button>
+          <button class="state-btn" onclick="setState('ofertas','sem-ofertas',this)">Sem ofertas</button>
+        </div>
+      </div>
+
+      <div class="state-panel__divider"></div>
+
+      <div class="state-panel__module">
+        <div class="state-panel__module-header">
+          <div class="state-panel__module-label">Cupons</div>
+          <span class="state-panel__active-badge" id="badge-cupons">Com cupons</span>
+        </div>
+        <div class="state-btns" id="btns-cupons">
+          <button class="state-btn is-active" onclick="setState('cupons','com-cupons',this)">Com cupons</button>
+          <button class="state-btn" onclick="setState('cupons','sem-cupons',this)">Sem cupons</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <button class="state-panel__toggle" aria-label="Alternar painel de estados" id="statePanelToggle">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14"/>
+    </svg>
+    <span class="state-panel__toggle-label">Playground · Estados</span>
+  </button>
+</div>
+
+<script>
+// ─── Estado global ──────────────────────────────────────────
+const currentStates = {
+  'proxima-data': 'pending',
+  'resultados':   'with-results',
+  'pendencias':   'with-pending',
+  'ia':           'tsh-high',
+  'familia':      'hidden',
+  'ofertas':      'contextual',
+  'cupons':       'com-cupons',
+};
+
+// ─── SVG Icons ─────────────────────────────────────────────
+const ico = {
+  clock:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+  pin:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+  heart:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
+  doc:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+  docLines: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+  warn:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+  check:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`,
+  card:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>`,
+  plus:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>`,
+  calendar: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+  users:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+  gap:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  tag:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
+  star:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  home:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`,
+};
+
+// ─── Variação 2: lógica de atalhos contextuais ──────────────
+// Atalhos são derivados do estado atual do paciente.
+// Regra: atalhos contextuais/urgentes sobem para o topo da lista;
+// atalho fixo (atendimento domiciliar) aparece sempre no final.
+function buildShortcuts() {
+  const pdState  = currentStates['proxima-data'];
+  const resState = currentStates['resultados'];
+  const penState = currentStates['pendencias'];
+
+  const shortcuts = [];
+
+  // Atalho derivado do estado da próxima data
+  if (pdState === 'pending' || pdState === 'urgent') {
+    shortcuts.push({
+      label: pdState === 'urgent' ? 'Confirmar presença — amanhã' : 'Confirmar presença',
+      icon:  ico.calendar,
+      type:  pdState === 'urgent' ? 'is-urgent' : 'is-contextual',
+      badge: pdState === 'urgent' ? '<span class="shortcut-badge is-warning" aria-label="Urgente">Hoje</span>' : '',
+    });
+  } else if (pdState === 'no-appointment') {
+    shortcuts.push({
+      label: 'Agendar consulta',
+      icon:  ico.calendar,
+      type:  'is-contextual',
+      badge: '',
+    });
+  } else if (pdState === 'with-pending') {
+    shortcuts.push({
+      label: 'Resolver pendência do exame',
+      icon:  ico.warn,
+      type:  'is-urgent',
+      badge: '<span class="shortcut-badge is-warning" aria-label="Pendente">Pendente</span>',
+    });
+  }
+
+  // Atalho derivado de novos resultados
+  if (resState === 'with-results') {
+    shortcuts.push({
+      label: 'Ver 3 resultados novos',
+      icon:  ico.docLines,
+      type:  'is-contextual',
+      badge: '<span class="shortcut-badge" aria-label="3 novos">3</span>',
+    });
+  }
+
+  // Atalho derivado de pendências críticas
+  if (penState === 'critical') {
+    shortcuts.push({
+      label: 'Pendência vencida — resolver agora',
+      icon:  ico.warn,
+      type:  'is-urgent',
+      badge: '<span class="shortcut-badge is-warning" aria-label="Crítico">!</span>',
+    });
+  }
+
+  // Atalho fixo: sem entrada direta na sidebar
+  shortcuts.push({
+    label: 'Atendimento domiciliar',
+    icon:  ico.home,
+    type:  '',
+    badge: '',
+  });
+
+  return shortcuts;
+}
+
+function renderShortcuts() {
+  const row = document.getElementById('shortcuts-row');
+  if (!row) return;
+  row.innerHTML = buildShortcuts().map(s => `
+    <button class="shortcut-item ${s.type}" aria-label="${s.label}">
+      <div class="shortcut-item__icon" aria-hidden="true">${s.icon}</div>
+      <span class="shortcut-item__label">${s.label}</span>
+      ${s.badge}
+    </button>
+  `).join('');
+}
+
+// ─── Templates dos módulos ──────────────────────────────────
+const templates = {
+
+  'proxima-data': {
+    pending: () => `
+      <div class="next-date-card">
+        <p class="next-date-card__label">Próxima data</p>
+        <div class="next-date-card__body">
+          <div class="date-badge" aria-hidden="true">
+            <div class="date-badge__day">24</div>
+            <div class="date-badge__month">mar</div>
+          </div>
+          <div class="date-info">
+            <div class="status-chip pending" role="status"><span class="status-chip__dot"></span> Aguardando confirmação</div>
+            <div class="date-info__name">Hemograma completo</div>
+            <div class="date-info__meta">
+              <span class="date-info__meta-item">${ico.clock} Segunda-feira, 24 de março · 8h30</span>
+              <span class="date-info__meta-item">${ico.pin} Laboratório Delboni Sumaré — Rua João Ramalho, 650</span>
+              <span class="date-info__meta-item">${ico.heart} Bradesco Saúde</span>
+            </div>
+          </div>
+        </div>
+        <div class="next-date-card__actions">
+          <button class="btn btn-primary">Confirmar presença</button>
+          <button class="btn btn-ghost-white">Ver preparo</button>
+          <button class="btn btn-ghost-white" style="margin-left:auto">Reagendar</button>
+        </div>
+      </div>`,
+
+    confirmed: () => `
+      <div class="next-date-card" style="background: linear-gradient(135deg, #0D3D20 0%, #1a5c30 60%, #1F6634 100%)">
+        <p class="next-date-card__label">Próxima data</p>
+        <div class="next-date-card__body">
+          <div class="date-badge" aria-hidden="true">
+            <div class="date-badge__day">24</div>
+            <div class="date-badge__month">mar</div>
+          </div>
+          <div class="date-info">
+            <div class="status-chip confirmed" role="status"><span class="status-chip__dot"></span> Presença confirmada</div>
+            <div class="date-info__name">Hemograma completo</div>
+            <div class="date-info__meta">
+              <span class="date-info__meta-item">${ico.clock} Segunda-feira, 24 de março · 8h30</span>
+              <span class="date-info__meta-item">${ico.pin} Laboratório Delboni Sumaré — Rua João Ramalho, 650</span>
+              <span class="date-info__meta-item">${ico.heart} Bradesco Saúde</span>
+            </div>
+          </div>
+        </div>
+        <div class="next-date-card__actions">
+          <button class="btn btn-ghost-white">Ver preparo</button>
+          <button class="btn btn-ghost-white">Adicionar ao calendário</button>
+          <button class="btn btn-ghost-white" style="margin-left:auto">Reagendar</button>
+        </div>
+      </div>`,
+
+    urgent: () => `
+      <div class="next-date-card" style="background: linear-gradient(135deg, #2D1B00 0%, #7D3B03 55%, #B95804 100%)">
+        <p class="next-date-card__label" style="display:flex;align-items:center;gap:6px">
+          <span style="background:rgba(255,200,0,.25);color:#FFE066;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;letter-spacing:.5px">AMANHÃ</span>
+          Próxima data
+        </p>
+        <div class="next-date-card__body">
+          <div class="date-badge" aria-hidden="true"><div class="date-badge__day">20</div><div class="date-badge__month">mar</div></div>
+          <div class="date-info">
+            <div class="status-chip pending" role="status" style="background:rgba(255,200,0,.2);color:#FFE066"><span class="status-chip__dot" style="background:#FFE066"></span> Em menos de 24h</div>
+            <div class="date-info__name">Hemograma completo</div>
+            <div class="date-info__meta">
+              <span class="date-info__meta-item">${ico.clock} Quinta-feira, 20 de março · 7h</span>
+              <span class="date-info__meta-item">${ico.pin} Laboratório Delboni Sumaré — Rua João Ramalho, 650</span>
+            </div>
+          </div>
+        </div>
+        <div class="preparo-section">
+          <p class="preparo-section__title">Preparo obrigatório</p>
+          <div class="preparo-list">
+            <div class="preparo-item"><span class="preparo-item__dot"></span> Jejum de 12 horas antes do exame</div>
+            <div class="preparo-item"><span class="preparo-item__dot"></span> Água sem gás é permitida</div>
+            <div class="preparo-item"><span class="preparo-item__dot"></span> Não praticar exercícios físicos nas 24h anteriores</div>
+            <div class="preparo-item"><span class="preparo-item__dot"></span> Trazer pedido médico impresso ou digital</div>
+          </div>
+        </div>
+        <div class="next-date-card__actions" style="margin-top:20px">
+          <button class="btn btn-primary">Confirmar presença</button>
+          <button class="btn btn-ghost-white" style="margin-left:auto">Reagendar</button>
+        </div>
+      </div>`,
+
+    'no-appointment': () => `
+      <div class="next-date-card" style="background: linear-gradient(135deg, #1A1A2E 0%, #16213E 60%, #0F3460 100%)">
+        <p class="next-date-card__label">Próxima data</p>
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 0;gap:12px;text-align:center;position:relative">
+          <div style="width:56px;height:56px;background:rgba(255,255,255,.1);border-radius:16px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5)">${ico.calendar}</div>
+          <div style="font-size:16px;font-weight:700;color:#fff">Nenhum exame agendado</div>
+          <div style="font-size:13px;opacity:.65;max-width:260px;line-height:1.5">Agende seu próximo exame ou consulta. Todas as unidades Dasa disponíveis para você.</div>
+        </div>
+        <div class="next-date-card__actions">
+          <button class="btn btn-primary">Agendar consulta</button>
+          <button class="btn btn-ghost-white">Ver unidades</button>
+        </div>
+      </div>`,
+
+    'with-pending': () => `
+      <div class="next-date-card">
+        <p class="next-date-card__label">Próxima data</p>
+        <div class="next-date-card__body">
+          <div class="date-badge" aria-hidden="true"><div class="date-badge__day">24</div><div class="date-badge__month">mar</div></div>
+          <div class="date-info">
+            <div class="status-chip pending" role="status"><span class="status-chip__dot"></span> Aguardando confirmação</div>
+            <div class="date-info__name">Ecocardiograma</div>
+            <div class="date-info__meta">
+              <span class="date-info__meta-item">${ico.clock} Segunda-feira, 24 de março · 10h</span>
+              <span class="date-info__meta-item">${ico.pin} Laboratório Delboni Sumaré — Rua João Ramalho, 650</span>
+              <span class="date-info__meta-item">${ico.heart} Bradesco Saúde</span>
+            </div>
+            <div class="inline-pending" role="alert">
+              <div class="inline-pending__icon">${ico.card}</div>
+              <div class="inline-pending__body">
+                <div class="inline-pending__name">Autorização do convênio pendente</div>
+                <div class="inline-pending__detail">Bradesco Saúde · Prazo: 21 de março · Exame pode ser cancelado</div>
+              </div>
+              <button class="inline-pending__cta">Resolver</button>
+            </div>
+          </div>
+        </div>
+        <div class="next-date-card__actions">
+          <button class="btn btn-primary">Confirmar presença</button>
+          <button class="btn btn-ghost-white">Ver preparo</button>
+          <button class="btn btn-ghost-white" style="margin-left:auto">Reagendar</button>
+        </div>
+      </div>`,
+
+    past: () => `
+      <div class="next-date-card" style="background: linear-gradient(135deg, #1F0C10 0%, #5C1520 55%, #7E1B27 100%)">
+        <p class="next-date-card__label">Última data</p>
+        <div class="next-date-card__body">
+          <div class="date-badge" style="opacity:.6" aria-hidden="true"><div class="date-badge__day">14</div><div class="date-badge__month">mar</div></div>
+          <div class="date-info">
+            <div class="status-chip" role="status" style="background:rgba(255,80,80,.2);color:#FF9999"><span class="status-chip__dot" style="background:#FF9999"></span> Não comparecido</div>
+            <div class="date-info__name" style="opacity:.8">Hemograma completo</div>
+            <div class="date-info__meta">
+              <span class="date-info__meta-item">${ico.clock} Sexta-feira, 14 de março · 8h30 (passada)</span>
+              <span class="date-info__meta-item">${ico.pin} Laboratório Delboni Sumaré — Rua João Ramalho, 650</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding:12px 14px;background:rgba(255,80,80,.1);border-radius:12px;border:1px solid rgba(255,80,80,.2);font-size:13px;opacity:.85;line-height:1.5">
+          Esta data passou sem confirmação de comparecimento. Se foi um engano, reagende sem custo.
+        </div>
+        <div class="next-date-card__actions" style="margin-top:16px">
+          <button class="btn btn-primary" style="background:#fff;color:#7E1B27">Reagendar exame</button>
+          <button class="btn btn-ghost-white">Entrar em contato</button>
+        </div>
+      </div>`,
+  },
+
+  resultados: {
+    'with-results': () => `
+      <div class="card">
+        <div class="card__header">
+          <h2 class="card__title">${ico.docLines} Resultados disponíveis</h2>
+          <button class="card__link">Mostrar todos</button>
+        </div>
+        <div class="result-list" role="list">
+          <div class="result-item" role="listitem">
+            <div class="result-icon blue">${ico.doc}</div>
+            <div class="result-info">
+              <div class="result-info__name">Colesterol total e frações</div>
+              <div class="result-info__meta">Disponível desde 18 de março · Dr. Carlos Mendes</div>
+            </div>
+            <span class="result-new-badge">Novo</span>
+            <button class="result-action">Ver resultado</button>
+          </div>
+          <div class="result-item" role="listitem">
+            <div class="result-icon green">${ico.doc}</div>
+            <div class="result-info">
+              <div class="result-info__name">Glicose em jejum</div>
+              <div class="result-info__meta">Disponível desde 18 de março · Dr. Carlos Mendes</div>
+            </div>
+            <span class="result-new-badge">Novo</span>
+            <button class="result-action">Ver resultado</button>
+          </div>
+          <div class="result-item" role="listitem">
+            <div class="result-icon info">${ico.doc}</div>
+            <div class="result-info">
+              <div class="result-info__name">TSH — Hormônio estimulante da tireoide</div>
+              <div class="result-info__meta">Disponível desde 12 de março · Dra. Patrícia Alves</div>
+            </div>
+            <button class="result-action">Ver resultado</button>
+          </div>
+        </div>
+      </div>`,
+
+    loading: () => `
+      <div class="card">
+        <div class="card__header"><h2 class="card__title">${ico.docLines} Resultados disponíveis</h2></div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          ${[1,2,3].map(() => `
+            <div style="display:flex;align-items:center;gap:14px">
+              <div class="skeleton" style="width:40px;height:40px;border-radius:12px;flex-shrink:0"></div>
+              <div style="flex:1">
+                <div class="skeleton skeleton-line lg"></div>
+                <div class="skeleton skeleton-line sm" style="margin-bottom:0"></div>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>`,
+
+    empty: () => `
+      <div class="card">
+        <div class="card__header"><h2 class="card__title">${ico.docLines} Resultados disponíveis</h2></div>
+        <div class="empty-state">
+          <div class="empty-state__icon">${ico.doc}</div>
+          <div class="empty-state__title">Sem resultados disponíveis</div>
+          <div class="empty-state__desc">Quando seus exames forem processados, os resultados aparecem aqui automaticamente.</div>
+        </div>
+      </div>`,
+  },
+
+  pendencias: {
+    'with-pending': () => `
+      <div class="card">
+        <div class="card__header"><h2 class="card__title">${ico.warn} Pendências ativas</h2></div>
+        <div class="pending-list" role="list">
+          <div class="pending-item" role="listitem">
+            <div class="pending-icon">${ico.plus}</div>
+            <div class="pending-info">
+              <div class="pending-info__name">Pedido médico necessário</div>
+              <div class="pending-info__detail">Ressonância magnética de coluna · Solicitar ao médico responsável</div>
+            </div>
+            <button class="pending-action">Resolver</button>
+          </div>
+          <div class="pending-item" role="listitem">
+            <div class="pending-icon">${ico.card}</div>
+            <div class="pending-info">
+              <div class="pending-info__name">Autorização do convênio pendente</div>
+              <div class="pending-info__detail">Ecocardiograma · Bradesco Saúde · Prazo: 21 de março</div>
+            </div>
+            <button class="pending-action">Resolver</button>
+          </div>
+        </div>
+      </div>`,
+
+    critical: () => `
+      <div class="card">
+        <div class="card__header"><h2 class="card__title" style="color:var(--error)">${ico.warn} Pendências ativas</h2></div>
+        <div class="pending-list" role="list">
+          <div class="pending-item critical" role="listitem">
+            <div class="pending-icon">${ico.card}</div>
+            <div class="pending-info">
+              <div class="pending-info__name">Prazo vencido — Autorização do convênio</div>
+              <div class="pending-info__detail">Ecocardiograma · Bradesco Saúde · Venceu em 21 de março</div>
+            </div>
+            <button class="pending-action">Resolver</button>
+          </div>
+          <div class="pending-item" role="listitem">
+            <div class="pending-icon">${ico.plus}</div>
+            <div class="pending-info">
+              <div class="pending-info__name">Pedido médico necessário</div>
+              <div class="pending-info__detail">Ressonância magnética de coluna · Prazo: 25 de março</div>
+            </div>
+            <button class="pending-action">Resolver</button>
+          </div>
+        </div>
+      </div>`,
+
+    resolved: () => `
+      <div class="card">
+        <div class="card__header"><h2 class="card__title">${ico.warn} Pendências</h2></div>
+        <div class="success-banner" role="status">
+          <div class="success-banner__icon">${ico.check}</div>
+          <div>
+            <div class="success-banner__text">Todas as pendências resolvidas</div>
+            <div class="success-banner__sub">Nenhuma ação necessária no momento</div>
+          </div>
+        </div>
+      </div>`,
+  },
+
+  ia: {
+    'tsh-high': () => `
+      <div class="ia-card">
+        <div class="ia-card__header"><span class="ia-chip">Sugestão personalizada</span></div>
+        <p class="ia-card__text">Seu TSH de <strong>6,2 mUI/L</strong> está acima da referência. Considere agendar consulta com sua endocrinologista.</p>
+        <div class="ia-actions">
+          <button class="ia-action-btn">Agendar consulta</button>
+          <button class="ia-action-btn">Ver detalhes</button>
+        </div>
+      </div>`,
+
+    seasonal: () => `
+      <div class="ia-card">
+        <div class="ia-card__header"><span class="ia-chip">Sugestão de saúde</span></div>
+        <p class="ia-card__text">Março é o início da temporada de gripe. Com hipotireoidismo, a vacina influenza é especialmente indicada.</p>
+        <div class="ia-actions">
+          <button class="ia-action-btn">Ver unidades</button>
+          <button class="ia-action-btn">Agendar vacina</button>
+        </div>
+      </div>`,
+
+    checkup: () => `
+      <div class="ia-card">
+        <div class="ia-card__header"><span class="ia-chip">Check-up preventivo</span></div>
+        <p class="ia-card__text">Seu último check-up completo foi em <strong>março de 2025</strong>. Recomendado anualmente para pacientes acima de 40 anos.</p>
+        <div class="ia-actions">
+          <button class="ia-action-btn">Ver pacote check-up</button>
+          <button class="ia-action-btn">Agendar consulta</button>
+        </div>
+      </div>`,
+
+    'gap-de-cuidado': () => `
+      <div class="ia-card" style="background:linear-gradient(135deg,#0A1628 0%,#001A7A 100%);border-color:rgba(0,55,255,.3)">
+        <div class="ia-card__header"><span class="gap-chip">${ico.gap} Gap de cuidado</span></div>
+        <p class="ia-card__text" style="color:rgba(255,255,255,.9)">Já faz um ano desde sua última mamografia. Com seu histórico familiar, este exame é importante.</p>
+        <div class="ia-actions">
+          <button class="ia-action-btn" style="background:var(--primary);color:#fff;border-color:var(--primary)">Agendar exame</button>
+          <button class="ia-action-btn" style="border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.7);background:rgba(255,255,255,.06)">Já realizei</button>
+        </div>
+      </div>`,
+
+    empty: () => `
+      <div class="ia-card" style="opacity:.65">
+        <div class="ia-card__header"><span class="ia-chip">Sugestão personalizada</span></div>
+        <p class="ia-card__text" style="color:var(--gray-80)">Nenhuma sugestão no momento. Sugestões personalizadas aparecerão quando novos dados estiverem disponíveis.</p>
+      </div>`,
+  },
+
+  familia: {
+    hidden: () => ``,
+
+    'with-dependents': () => `
+      <div class="card">
+        <div class="card__header">
+          <h2 class="card__title">${ico.users} Espaço família</h2>
+          <button class="card__link">Gerenciar dependentes</button>
+        </div>
+        <p class="familia-section-label">Últimas atualizações</p>
+        <div class="familia-grid" role="list">
+          <div class="familia-card" role="listitem">
+            <div class="familia-card__header">
+              <div class="familia-avatar teal">LR</div>
+              <div><div class="familia-card__name">Laura</div><div class="familia-card__rel">Filha · 14 anos</div></div>
+            </div>
+            <div class="familia-card__update">Resultado disponível</div>
+            <div class="familia-card__detail success">Ferritina e ferro sérico<br>Disponível</div>
+            <div class="familia-card__actions">
+              <button class="familia-btn primary">Ver resultado</button>
+              <button class="familia-btn ghost">Já realizei</button>
+            </div>
+          </div>
+          <div class="familia-card" role="listitem">
+            <div class="familia-card__header">
+              <div class="familia-avatar green">AG</div>
+              <div><div class="familia-card__name">Agenor</div><div class="familia-card__rel">Cônjuge · 52 anos</div></div>
+            </div>
+            <div class="familia-card__update">Consulta em 5 dias</div>
+            <div class="familia-card__detail warning">Endocrinologista<br>23 jun, 15h</div>
+            <div class="familia-card__actions">
+              <button class="familia-btn primary">Criar alerta</button>
+              <button class="familia-btn ghost">Reagendar</button>
+            </div>
+          </div>
+          <div class="familia-card" role="listitem">
+            <div class="familia-card__header">
+              <div class="familia-avatar orange">MC</div>
+              <div><div class="familia-card__name">Maria Clara</div><div class="familia-card__rel">Mãe · 73 anos</div></div>
+            </div>
+            <div class="familia-card__update">Vacina com data próxima</div>
+            <div class="familia-card__detail">DTP adulto<br>Até 2 de abr</div>
+            <div class="familia-card__actions">
+              <button class="familia-btn primary">Agendar vacina</button>
+            </div>
+          </div>
+        </div>
+      </div>`,
+
+    empty: () => `
+      <div class="card">
+        <div class="card__header"><h2 class="card__title">${ico.users} Espaço família</h2></div>
+        <div class="empty-state">
+          <div class="empty-state__icon">${ico.users}</div>
+          <div class="empty-state__title">Nenhum dependente cadastrado</div>
+          <div class="empty-state__desc">Adicione dependentes para acompanhar a saúde da família em um só lugar.</div>
+        </div>
+        <button class="btn btn-outline" style="width:100%;margin-top:4px">Adicionar dependente</button>
+      </div>`,
+  },
+
+  ofertas: {
+    contextual: () => `
+      <div class="card">
+        <div class="card__header">
+          <h2 class="card__title">${ico.star} Sugestões para você</h2>
+          <button class="card__link">Mostrar tudo</button>
+        </div>
+        <div class="oferta-list" role="list">
+          <div class="oferta-item" role="listitem">
+            <div class="oferta-item__icon">${ico.heart}</div>
+            <div class="oferta-item__body">
+              <div class="oferta-item__name">Check-up Cardiovascular</div>
+              <div class="oferta-item__desc">Colesterol, triglicerídeos, glicemia, ácido úrico — 6 exames</div>
+              <div class="oferta-economia">Economize R$ 115 · 24% off</div>
+            </div>
+            <button class="oferta-item__cta">Agendar</button>
+          </div>
+          <div class="oferta-item" role="listitem">
+            <div class="oferta-item__icon">${ico.check}</div>
+            <div class="oferta-item__body">
+              <div class="oferta-item__name">Check-up Geral</div>
+              <div class="oferta-item__desc">Hemograma, glicemia, perfil lipídico, TSH e função renal</div>
+              <div class="oferta-economia">Economize R$ 95 · 25% off</div>
+            </div>
+            <button class="oferta-item__cta">Agendar</button>
+          </div>
+        </div>
+      </div>`,
+
+    'sem-ofertas': () => `
+      <div class="card">
+        <div class="card__header"><h2 class="card__title">${ico.star} Sugestões para você</h2></div>
+        <div class="empty-state">
+          <div class="empty-state__icon">${ico.star}</div>
+          <div class="empty-state__title">Nenhuma sugestão disponível</div>
+          <div class="empty-state__desc">Pacotes personalizados aparecerão aqui quando disponíveis.</div>
+        </div>
+      </div>`,
+  },
+
+  cupons: {
+    'com-cupons': () => `
+      <div class="card">
+        <div class="card__header">
+          <h2 class="card__title">${ico.tag} Cupons e parcerias</h2>
+          <button class="card__link">Mostrar todos</button>
+        </div>
+        <div class="cupom-list" role="list">
+          <div class="cupom-item">
+            <div class="cupom-tag">GRIPE25</div>
+            <div class="cupom-info">
+              <div class="cupom-info__desc">25% off na vacina influenza</div>
+              <div class="cupom-info__valid">Válido até 30 de abril</div>
+            </div>
+            <button class="cupom-usar">Usar</button>
+          </div>
+          <div class="cupom-item">
+            <div class="cupom-tag">BRADESCO</div>
+            <div class="cupom-info">
+              <div class="cupom-info__desc">Coleta domiciliar sem custo</div>
+              <div class="cupom-info__valid">Benefício Bradesco Saúde · Mensal</div>
+            </div>
+            <button class="cupom-usar">Usar</button>
+          </div>
+          <div class="cupom-item">
+            <div class="cupom-tag">DASA30</div>
+            <div class="cupom-info">
+              <div class="cupom-info__desc">30% off no check-up preventivo</div>
+              <div class="cupom-info__valid">Válido até 15 de abril</div>
+            </div>
+            <button class="cupom-usar">Usar</button>
+          </div>
+        </div>
+      </div>`,
+
+    'sem-cupons': () => `
+      <div class="card">
+        <div class="card__header"><h2 class="card__title">${ico.tag} Cupons e parcerias</h2></div>
+        <div class="empty-state">
+          <div class="empty-state__icon">${ico.tag}</div>
+          <div class="empty-state__title">Nenhum cupom disponível</div>
+          <div class="empty-state__desc">Cupons e benefícios aparecerão aqui quando disponíveis.</div>
+        </div>
+      </div>`,
+  },
+};
+
+// ─── Mapa de módulos → IDs no DOM ──────────────────────────
+const moduleMap = {
+  'proxima-data': 'module-proxima-data',
+  'resultados':   'module-resultados',
+  'pendencias':   'module-pendencias',
+  'ia':           'module-ia',
+  'familia':      'module-familia',
+  'ofertas':      'module-ofertas',
+  'cupons':       'module-cupons',
+};
+
+function render(module, stateKey) {
+  const el  = document.getElementById(moduleMap[module]);
+  const tpl = templates[module]?.[stateKey];
+  if (el && tpl) el.innerHTML = tpl();
+}
+
+function setState(module, stateKey, btn) {
+  currentStates[module] = stateKey;
+  render(module, stateKey);
+
+  const group = document.getElementById(`btns-${module}`);
+  if (group) group.querySelectorAll('.state-btn').forEach(b => b.classList.remove('is-active'));
+  if (btn) btn.classList.add('is-active');
+
+  const activeBadge = document.getElementById(`badge-${module}`);
+  if (activeBadge && btn) activeBadge.textContent = btn.textContent.trim();
+
+  if (['proxima-data', 'resultados', 'pendencias'].includes(module)) renderShortcuts();
+
+  if (module === 'resultados') {
+    const badge = document.getElementById('nav-badge-resultados');
+    if (badge) badge.style.display = stateKey === 'with-results' ? '' : 'none';
+  }
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.panel-tab').forEach(t =>
+    t.classList.toggle('is-active', t.id === `tab-${name}-btn`)
+  );
+  document.querySelectorAll('.panel-content').forEach(c => {
+    c.hidden = c.id !== `tab-${name}`;
+  });
+}
+
+// ─── Painel arrastável — refatorado ─────────────────────────
+const _spc = (function() {
+  const STORAGE_KEY = 'dasa-playground-panel-pos';
+  const DRAG_THRESHOLD = 5;
+  const MARGIN = 12;
+
+  const panel  = document.getElementById('statePanel');
+  const toggle = document.getElementById('statePanelToggle');
+  const drawer = document.getElementById('statePanelDrawer');
+  const header = drawer && drawer.querySelector('.state-panel__header');
+  if (!panel || !toggle || !drawer) return {};
+
+  let dragging = false, didMove = false, activeId = null;
+  let startX, startY, originLeft, originTop;
+
+  function isOpen() { return drawer.classList.contains('is-open'); }
+
+  function updateDrawerLayout(left, top) {
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const tw = toggle.offsetWidth  || 180;
+    const th = toggle.offsetHeight || 44;
+    const isBottom = top + th / 2 > vh / 2;
+    const isRight  = left + tw / 2 > vw / 2;
+
+    if (isBottom) {
+      drawer.style.bottom = (th + 8) + 'px';
+      drawer.style.top    = '';
+    } else {
+      drawer.style.top    = (th + 8) + 'px';
+      drawer.style.bottom = '';
+    }
+    if (isRight) {
+      drawer.style.right = '0';
+      drawer.style.left  = '';
+    } else {
+      drawer.style.left  = '0';
+      drawer.style.right = '';
+    }
+    drawer.style.transformOrigin =
+      `${isBottom ? 'bottom' : 'top'} ${isRight ? 'right' : 'left'}`;
+  }
+
+  function clampPos(left, top) {
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const pw = toggle.offsetWidth  || 180;
+    const ph = toggle.offsetHeight || 44;
+    return {
+      left: Math.max(MARGIN, Math.min(vw - pw - MARGIN, left)),
+      top:  Math.max(MARGIN, Math.min(vh - ph - MARGIN, top)),
+    };
+  }
+
+  function setPos(left, top, save) {
+    const c = clampPos(left, top);
+    panel.style.left = c.left + 'px';
+    panel.style.top  = c.top  + 'px';
+    updateDrawerLayout(c.left, c.top);
+    if (save) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(c)); } catch(e) {}
+    }
+  }
+
+  function ensureDrawerInViewport() {
+    if (!isOpen()) return;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const left = parseFloat(panel.style.left) || 0;
+    const top  = parseFloat(panel.style.top)  || 0;
+    const tw = toggle.offsetWidth  || 180;
+    const th = toggle.offsetHeight || 44;
+    const dh = drawer.offsetHeight || 300;
+    const dw = drawer.offsetWidth  || 296;
+    const isBottom = top + th / 2 > vh / 2;
+    const isRight  = left + tw / 2 > vw / 2;
+
+    let nl = left, nt = top;
+    if (isBottom) {
+      if (top - th - 8 - dh < MARGIN) nt = MARGIN + dh + 8 + th;
+    } else {
+      if (top + th + 8 + dh > vh - MARGIN) nt = vh - MARGIN - dh - 8 - th;
+    }
+    if (isRight) {
+      if (left + tw - dw < MARGIN) nl = MARGIN + dw - tw;
+    } else {
+      if (left + dw > vw - MARGIN) nl = vw - MARGIN - dw;
+    }
+    if (nl !== left || nt !== top) {
+      panel.style.transition = 'left 180ms ease, top 180ms ease';
+      setPos(nl, nt, true);
+      setTimeout(() => { panel.style.transition = ''; }, 200);
+    }
+  }
+
+  function initPos() {
+    let saved;
+    try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) {}
+    if (saved && typeof saved.left === 'number') {
+      setPos(saved.left, saved.top, false);
+    } else {
+      requestAnimationFrame(() => {
+        const vw = window.innerWidth, vh = window.innerHeight;
+        setPos(
+          vw - (toggle.offsetWidth  || 180) - MARGIN - 4,
+          vh - (toggle.offsetHeight || 44)  - MARGIN - 4,
+          false
+        );
+      });
+    }
+  }
+
+  function beginDrag(e) {
+    dragging = false; didMove = false;
+    startX = e.clientX; startY = e.clientY;
+    originLeft = parseFloat(panel.style.left) || 0;
+    originTop  = parseFloat(panel.style.top)  || 0;
+    activeId   = e.pointerId;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  }
+
+  function onMove(e) {
+    if (activeId === null || e.pointerId !== activeId) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    if (!didMove && Math.hypot(dx, dy) > DRAG_THRESHOLD) {
+      didMove = true; dragging = true;
+      panel.classList.add('is-dragging');
+      panel.style.transition = 'none';
+    }
+    if (dragging) setPos(originLeft + dx, originTop + dy, false);
+  }
+
+  function onUp(e) {
+    if (activeId === null || e.pointerId !== activeId) return;
+    const wasClick = !didMove;
+    if (dragging) {
+      setPos(parseFloat(panel.style.left) || 0, parseFloat(panel.style.top) || 0, true);
+      panel.classList.remove('is-dragging');
+      panel.style.transition = '';
+      if (isOpen()) requestAnimationFrame(ensureDrawerInViewport);
+    } else if (wasClick && !e.target.closest('.state-panel__header')) {
+      togglePanel();
+    }
+    dragging = false; didMove = false; activeId = null;
+  }
+
+  function onCancel() {
+    panel.classList.remove('is-dragging');
+    panel.style.transition = '';
+    dragging = false; didMove = false; activeId = null;
+  }
+
+  toggle.addEventListener('pointerdown', function(e) {
+    if (e.button !== 0 && e.pointerType === 'mouse') return;
+    beginDrag(e);
+  });
+
+  if (header) {
+    header.addEventListener('pointerdown', function(e) {
+      if (e.button !== 0 && e.pointerType === 'mouse') return;
+      if (e.target.closest('button')) return;
+      beginDrag(e);
+    });
+  }
+
+  document.addEventListener('pointermove', onMove);
+  document.addEventListener('pointerup',   onUp);
+  document.addEventListener('pointercancel', onCancel);
+
+  window.addEventListener('resize', () => {
+    setPos(parseFloat(panel.style.left) || 0, parseFloat(panel.style.top) || 0, true);
+  });
+
+  initPos();
+  return { ensureDrawerInViewport };
+})();
+
+function togglePanel() {
+  const drawer = document.getElementById('statePanelDrawer');
+  if (!drawer) return;
+  drawer.classList.toggle('is-open');
+  if (drawer.classList.contains('is-open')) {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (_spc && _spc.ensureDrawerInViewport) _spc.ensureDrawerInViewport();
+    }));
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  render('proxima-data', 'pending');
+  render('resultados',   'with-results');
+  render('pendencias',   'with-pending');
+  render('ia',           'tsh-high');
+  render('familia',      'hidden');
+  render('ofertas',      'contextual');
+  render('cupons',       'com-cupons');
+  renderShortcuts();
+  document.querySelectorAll('.page-item[href]').forEach(item => {
+    if (window.location.href.includes(item.getAttribute('href'))) {
+      item.classList.add('is-current');
+    }
+  });
+});
+</script>
+</body>
+</html>

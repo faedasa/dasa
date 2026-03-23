@@ -1,0 +1,64 @@
+# dasa-design-kb
+
+> Hub centralizado de documentação colaborativa do time de Produto & Experiência da Dasa. Base de conhecimento estruturada para modelos de IA, designers e gestores que atuam no ecossistema de produtos Dasa.
+
+## Contexto essencial
+
+- [UX Guidelines](docs/ux-guidelines.md): Princípios de design, acessibilidade, padrões de interação e regras de componentes
+- [Copy Rules](docs/copy-rules.md): Tom de voz, capitalização, terminologia aprovada, pontuação e termos proibidos
+- [Design System](docs/design-system.md): Tokens oficiais, cores, tipografia, componentes e suas regras de uso
+- [Business Strategy](docs/business-strategy.md): Objetivos de produto, métricas, personas e proposta de valor
+
+## Specs para geração de código
+
+- [Specs — Índice](docs/specs/README.md): Índice das especificações técnicas — tabela de contratos, consumidores e regras de validação por agente
+- [Code Generation](docs/specs/code-generation.md): Contratos, regras e decisões arquiteturais para agentes que geram código
+- [Figma Mapping](docs/specs/figma-mapping.md): Mapeamento de componentes Figma → código, Code Connect e tabela de 16 componentes
+- [Figma MCP](docs/specs/figma-mcp.md): Instruções de uso do Figma MCP para leitura de frames e propriedades
+
+## Subprojetos ativos
+
+- [Subprojetos — Índice](docs/subprojects/README.md): Índice de todos os subprojetos e features do ecossistema Dasa com status, tipo e links de entrada
+- [Nav360](docs/subprojects/nav360/README.md): Plataforma de agendamento de exames — contexto, fluxos e decisões de produto
+- [Nav360 — Benchmarks Aplicados](docs/subprojects/nav360/benchmarks-applied.md): Aplicação produto-específica dos benchmarks ao Nav 360 Home Desktop com decisões de produto
+- [Alta Diagnósticos](docs/subprojects/alta-diagnosticos/README.md): Produto de alta hospitalar com integração diagnóstica
+- [Atendimento Domiciliar](docs/subprojects/atendimento-domiciliar/README.md): Coleta domiciliar (casa e escritório)
+- [Cartão Dasa](docs/subprojects/cartao-dasa/README.md): Produto de benefício e fidelidade
+- [Vacinas](docs/subprojects/vacinas/README.md): Produto de vacinação Dasa
+- [Figma Plugin](docs/subprojects/figma-plugin.md): Plugin Figma de checklist de qualidade de design — spec e repositório
+
+## Agentes de IA
+
+- [AGENTS.md](AGENTS.md): Instruções para agentes de IA (Cursor, Copilot, Codex, Jules) que operam neste repositório
+
+## Research
+
+- [Benchmarks — Dashboard Denso / Portal de Paciente](docs/research/benchmarks.md): Análise de padrões observáveis em produtos de referência para design de dashboards com alta densidade de informação
+- [Airbnb DLS](docs/research/airbnb-dls.md): Referência metodológica do Design System da Airbnb — princípios, governança e escala
+- [Progressive Disclosure](docs/research/progressive-disclosure.md): Referência NN/g sobre o padrão de divulgação progressiva aplicado a UX
+- [Padrões de Dashboard](docs/research/ux-dashboard-patterns.md): Referência NN/g sobre design de dashboards eficazes e legíveis
+- [Acessibilidade — Touch Targets](docs/research/accessibility-touch-targets.md): Referência WCAG 2.1 sobre tamanho mínimo de alvos interativos
+
+## Skills e automação (Cursor)
+
+- [SKILLS.md](SKILLS.md): Registro central de orquestração — 8 skills, protocolo INVOKE/CHAIN/ESCALATE e diagrama Mermaid
+- [onboarding-101](.cursor/skills/onboarding-101/SKILL.md): Tutorial interativo de onboarding com to-do list personalizada por perfil para novos membros do time
+- [nav360-brainstorm](.cursor/skills/nav360-brainstorm/SKILL.md): Variações de UX/UI para módulos do Nav360 com benchmark e checklist
+- [implement-design](.cursor/skills/implement-design/SKILL.md): Converte frames Figma em código production-ready
+- [playground-state-panel](.cursor/skills/playground-state-panel/SKILL.md): Injeta painel flutuante de estados em protótipos HTML em `docs/playground/`
+- [playground-sync-tokens](.cursor/skills/playground-sync-tokens/SKILL.md): Sincroniza tokens do DS (Figma MCP) no `:root` dos protótipos HTML
+- [quality-gate](.cursor/skills/quality-gate/SKILL.md): Valida código gerado contra o Design System Dasa
+- [copy-review](.cursor/skills/copy-review/SKILL.md): Revisa textos de interface contra as copy rules
+- [kb-commit](.cursor/skills/kb-commit/SKILL.md): Valida, commita e abre PR com mudanças no KB
+
+## Tokens
+
+- [alm-tokens.json](tokens/alm-tokens.json): Export oficial do Design System via Tokens Studio — valores numéricos de cores, espaçamentos, tipografia
+
+## Optional
+
+- [NEXT-FEATURES.md](docs/NEXT-FEATURES.md): Roadmap de funcionalidades planejadas para o dasa-design-kb
+- [PROTOTYPING.md](PROTOTYPING.md): Guia de pipeline Figma → código e Code 101 para designers
+- [CONTRIBUTING.md](CONTRIBUTING.md): Fluxo completo de contribuição com Git e skills
+- [CHANGELOG.md](CHANGELOG.md): Histórico versionado de todas as mudanças no KB
+- [legacy/](legacy/): Arquivos históricos — referência somente leitura
