@@ -34,12 +34,13 @@ Toda alteração neste repositório (adição, edição ou remoção de qualquer
 
 ## Skills disponíveis
 
-Oito skills estão disponíveis neste repositório. Cada uma tem um escopo preciso — acione a skill certa para cada intenção.
+Nove skills estão disponíveis neste repositório. Cada uma tem um escopo preciso — acione a skill certa para cada intenção.
 
 | Skill | Fase | Quando acionar |
 |---|---|---|
 | `onboarding-101` | Onboarding | "como funciona o KB", "101", primeiro acesso ao repositório |
 | `nav360-brainstorm` | Ideação | "brainstorm para o módulo X", explorar variações de UX/UI para o Nav360 |
+| `screen-contract` | Pré-geração | contrato estrutural JSON antes do código — frame Figma, screenshot ou brief |
 | `implement-design` | Implementação | "implemente esse frame", ao receber link Figma ou seleção ativa no Figma Desktop |
 | `playground-state-panel` | Playground | "gere um protótipo", "crie um playground para X", "adicione o estado Y ao módulo Z" |
 | `playground-sync-tokens` | Playground | automático após `playground-state-panel` Modo A — ou "sincronize os tokens do DS no playground" |
@@ -51,7 +52,7 @@ Oito skills estão disponíveis neste repositório. Cada uma tem um escopo preci
 
 **Produção (Figma → código):**
 ```
-implement-design  →  quality-gate  →  (copy-review se necessário)  →  kb-commit
+implement-design  →  screen-contract (Step 5, CHAIN)  →  quality-gate  →  (copy-review se necessário)  →  kb-commit
 ```
 
 **Playground (protótipo interativo):**
@@ -64,7 +65,7 @@ playground-state-panel (Modo A)  →  playground-sync-tokens  →  quality-gate 
 playground-state-panel (Modo B)  →  kb-commit
 ```
 
-- `implement-design` **sempre chama** `quality-gate` ao final
+- `implement-design` **sempre chama** `screen-contract` no Step 5 e `quality-gate` ao final do Step 8
 - `playground-state-panel` Modo A **sempre chama** `playground-sync-tokens` ao final
 - `quality-gate` **chama** `copy-review` quando o copy inline exige revisão profunda
 - `kb-commit` é independente — acionada após edições em `docs/` ou `tokens/`

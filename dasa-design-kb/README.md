@@ -55,7 +55,7 @@ Fluxo rápido:
 
 ## Skills disponíveis no Cursor
 
-Há **8 skills** neste repositório (definições em [`.cursor/skills/`](./.cursor/skills/)). Elas estão enraizadas nesta KB — consultam docs, tokens e specs para decidir com fundamento.
+Há **9 skills** neste repositório (definições em [`.cursor/skills/`](./.cursor/skills/)). Elas estão enraizadas nesta KB — consultam docs, tokens e specs para decidir com fundamento.
 
 **Orquestração, encadeamentos e vocabulário (`INVOKE`, `CHAIN`, etc.)** — fonte de verdade: [`SKILLS.md`](./SKILLS.md).
 
@@ -63,6 +63,7 @@ Há **8 skills** neste repositório (definições em [`.cursor/skills/`](./.curs
 |---|---|---|
 | `onboarding-101` | Onboarding | "onboarding", "101", "por onde começo", "como funciona o KB" |
 | `nav360-brainstorm` | Ideação | problema de UX / módulo do Nav360 (dashboard, portal logado) |
+| `screen-contract` | Pré-geração | "gere o contrato da tela", frame Figma ou brief antes do código |
 | `implement-design` | Implementação | frame Figma, node-id, "implementa esse design" |
 | `playground-state-panel` | Playground | HTML em `docs/playground/` + painel flutuante de estados |
 | `playground-sync-tokens` | Playground | "sincronize os tokens", tokens do DS no `:root` do protótipo |

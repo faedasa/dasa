@@ -150,7 +150,7 @@ Apresente o checklist completo de uma vez, com os itens base + os itens específ
 
 ### Cursor e automação
 [ ] 7. Leia .cursor/rules/ (dasa-kb.mdc e dasa-codegen.mdc) — entenda como o contexto é injetado automaticamente
-[ ] 8. Leia SKILLS.md — conheça as 6 skills e o protocolo de orquestração
+[ ] 8. Leia SKILLS.md — conheça as 9 skills e o protocolo de orquestração
 
 ### Exercício prático
 [ ] 9. Edite qualquer doc em docs/ (ex: adicione uma observação em docs/ux-guidelines.md) e use a skill kb-commit para publicar

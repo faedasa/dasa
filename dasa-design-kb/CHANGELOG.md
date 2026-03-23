@@ -75,6 +75,11 @@ Escopo: mudanças em `docs/` e `tokens/` deste repositório. O versionamento sem
 
 ## [Unreleased]
 
+### Changed
+
+- `llms.txt`, `README.md`, `.cursor/rules/dasa-kb.mdc`: inventário de skills sincronizado com **9 skills** — incluída `screen-contract` (já presente em `SKILLS.md` e em `.cursor/skills/`, mas ausente do índice para LLMs e das tabelas públicas); pipeline de produção na rule atualizado para refletir CHAIN `screen-contract` no Step 5 de `implement-design`
+- `.cursor/skills/onboarding-101/SKILL.md`: passo 8 do checklist corrigido ("9 skills" em vez de "6")
+
 ### Added
 
 - `docs/subprojects/nav360/` — subprojeto dedicado ao Nav360 (plataforma de agendamento), separando contexto do produto do KB transversal

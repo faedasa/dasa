@@ -41,9 +41,10 @@
 
 ## Skills e automação (Cursor)
 
-- [SKILLS.md](SKILLS.md): Registro central de orquestração — 8 skills, protocolo INVOKE/CHAIN/ESCALATE e diagrama Mermaid
+- [SKILLS.md](SKILLS.md): Registro central de orquestração — 9 skills, protocolo INVOKE/CHAIN/ESCALATE e diagrama Mermaid
 - [onboarding-101](.cursor/skills/onboarding-101/SKILL.md): Tutorial interativo de onboarding com to-do list personalizada por perfil para novos membros do time
 - [nav360-brainstorm](.cursor/skills/nav360-brainstorm/SKILL.md): Variações de UX/UI para módulos do Nav360 com benchmark e checklist
+- [screen-contract](.cursor/skills/screen-contract/SKILL.md): Converte frame Figma, screenshot ou brief em contrato estrutural JSON (checkpoint antes do código)
 - [implement-design](.cursor/skills/implement-design/SKILL.md): Converte frames Figma em código production-ready
 - [playground-state-panel](.cursor/skills/playground-state-panel/SKILL.md): Injeta painel flutuante de estados em protótipos HTML em `docs/playground/`
 - [playground-sync-tokens](.cursor/skills/playground-sync-tokens/SKILL.md): Sincroniza tokens do DS (Figma MCP) no `:root` dos protótipos HTML
